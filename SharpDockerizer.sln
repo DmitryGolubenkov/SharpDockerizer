@@ -3,11 +3,15 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpDockerizer.AvaloniaUI", "SharpDockerizer.AvaloniaApp\SharpDockerizer.AvaloniaUI.csproj", "{72C18137-0A34-4AA8-BA46-B29216473F66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDockerizer.AvaloniaUI", "src\SharpDockerizer.AvaloniaApp\SharpDockerizer.AvaloniaUI.csproj", "{72C18137-0A34-4AA8-BA46-B29216473F66}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpDockerizer.AppLayer", "SharpDockerizer.AppLayer\SharpDockerizer.AppLayer.csproj", "{CEDCB110-A2C5-4C2F-920D-0863D368BD9A}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDockerizer.AppLayer", "src\SharpDockerizer.AppLayer\SharpDockerizer.AppLayer.csproj", "{CEDCB110-A2C5-4C2F-920D-0863D368BD9A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpDockerizer.Core", "SharpDockerizer.Core\SharpDockerizer.Core.csproj", "{30080396-E189-43B0-B2FD-CDD974D0F7E9}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDockerizer.Core", "src\SharpDockerizer.Core\SharpDockerizer.Core.csproj", "{30080396-E189-43B0-B2FD-CDD974D0F7E9}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{38CB6395-F598-4FBA-8182-900A32945496}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{FF03919F-A0D8-432F-8749-C8B4DEF59189}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -30,6 +34,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{72C18137-0A34-4AA8-BA46-B29216473F66} = {38CB6395-F598-4FBA-8182-900A32945496}
+		{CEDCB110-A2C5-4C2F-920D-0863D368BD9A} = {38CB6395-F598-4FBA-8182-900A32945496}
+		{30080396-E189-43B0-B2FD-CDD974D0F7E9} = {38CB6395-F598-4FBA-8182-900A32945496}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DE520C0F-163E-4FF5-A074-C059207C0555}

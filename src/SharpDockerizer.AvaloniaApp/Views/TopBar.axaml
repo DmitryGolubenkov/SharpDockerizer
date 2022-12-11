@@ -30,8 +30,17 @@
 						<Label Margin="4,0,0,0">_About</Label>
 					</WrapPanel>
 				</MenuItem.Header>
-				<MenuItem Header="Open GitHub page" />
+				<MenuItem Command="{Binding OpenGitHubPage}" Header="Open GitHub page">
+					<MenuItem.Header>
+						<WrapPanel Orientation="Horizontal">
+							<mati:MaterialIcon Kind="Github" />
+							<Label Margin="4,0,0,0">Open GitHub page</Label>
+						</WrapPanel>
+					</MenuItem.Header>
+				</MenuItem>
+				<!--
 				<MenuItem Header="About SharpDockerizer.."/>
+				-->
 			</MenuItem>
 		</Menu>
 	</Border>

@@ -8,12 +8,12 @@ using SharpDockerizer.Core.Models;
 using SharpDockerizer.AvaloniaUI.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
-using System.Reflection;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
 internal partial class DockerfileGeneratorViewModel
 {
+    #region Properties
 
     [ObservableProperty]
     private bool _isProjectSelected;
@@ -29,9 +29,17 @@ internal partial class DockerfileGeneratorViewModel
 
     public ObservableCollection<NuGetSource> NuGetSources { get; set; } = new ObservableCollection<NuGetSource>();
 
+    #endregion
+
+    #region Fields
+
     private readonly IDockerfileGenerator _dockerfileGenerator;
     private readonly IMessenger _messenger;
     private ProjectData? _selectedProjectData;
+
+    #endregion
+
+    #region Constructor
 
     public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator, IMessenger messenger)
     {
@@ -40,6 +48,10 @@ internal partial class DockerfileGeneratorViewModel
         _messenger.Register<ProjectSelectedEvent>(this, OnProjectSelectedHandler);
         _messenger.Register<SolutionLoadedEvent>(this, OnSolutionLoadedEvent);
     }
+
+    #endregion
+
+    #region Event Handlers
 
     private void OnSolutionLoadedEvent(object recipient, SolutionLoadedEvent message)
     {
@@ -63,7 +75,9 @@ internal partial class DockerfileGeneratorViewModel
             SelectedProjectName = null;
         }
     }
+    #endregion
 
+    #region Relay Commands
 
     [RelayCommand]
     public void GenerateDockerfile()
@@ -99,10 +113,11 @@ internal partial class DockerfileGeneratorViewModel
     [RelayCommand]
     public void AddNuGetSource()
     {
-        NuGetSources.Add(new NuGetSource() { 
+        NuGetSources.Add(new NuGetSource()
+        {
             Name = "NugetSource",
             Link = "https://linktonugetsource.com/index.json",
-            AuthenticationRequired = false 
+            AuthenticationRequired = false
         });
         OnPropertyChanged(nameof(NuGetSources));
     }
@@ -113,4 +128,6 @@ internal partial class DockerfileGeneratorViewModel
         NuGetSources.Remove(source as NuGetSource);
         OnPropertyChanged(nameof(NuGetSources));
     }
+
+    #endregion
 }

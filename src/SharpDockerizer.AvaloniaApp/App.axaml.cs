@@ -28,7 +28,6 @@ public partial class App : Application
         ConfigureServices(serviceCollection);
 
         _services = serviceCollection.BuildServiceProvider();
-        Log.Information("ServiceProvider initialized");
 
         // Used in DI and MVVM
         DISource.Resolver = _services.GetService;

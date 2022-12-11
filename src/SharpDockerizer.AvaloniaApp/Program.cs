@@ -1,4 +1,5 @@
 using Avalonia;
+using Serilog;
 using System;
 
 namespace SharpDockerizer.AvaloniaUI;
@@ -10,8 +11,15 @@ internal class Program
     [STAThread]
     public static void Main(string[] args)
     {
-        BuildAvaloniaApp()
-        .StartWithClassicDesktopLifetime(args);
+        try
+        {
+            BuildAvaloniaApp()
+            .StartWithClassicDesktopLifetime(args);
+        }
+        catch (Exception ex)
+        {
+            Log.Fatal(ex, "Unhandled exception occured!");
+        }
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.

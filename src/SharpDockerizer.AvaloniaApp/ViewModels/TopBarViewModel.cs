@@ -8,13 +8,20 @@ using System.Threading.Tasks;
 using SharpDockerizer.AppLayer.Contracts;
 using CommunityToolkit.Mvvm.Messaging;
 using SharpDockerizer.AppLayer.Events;
+using SharpDockerizer.AppLayer.Utilities;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
 internal partial class TopBarViewModel
 {
+    #region Fields
+
     private ISolutionLoader _solutionLoader;
     private readonly IMessenger _messenger;
+
+    #endregion
+
+    #region Constructor
 
     public TopBarViewModel(ISolutionLoader solutionLoader, IMessenger messenger)
     {
@@ -22,6 +29,9 @@ internal partial class TopBarViewModel
         _messenger = messenger;
     }
 
+    #endregion
+
+    #region Relay Commands
 
     /// <summary>
     /// Loads solution using .sln file path
@@ -63,4 +73,12 @@ internal partial class TopBarViewModel
             desktopLifetime.Shutdown();
         }
     }
+
+    [RelayCommand]
+    internal void OpenGitHubPage()
+    {
+        BrowserUtility.OpenBrowser("https://github.com/DmitryGolubenkov/SharpDockerizer");
+    }
+
+    #endregion
 }

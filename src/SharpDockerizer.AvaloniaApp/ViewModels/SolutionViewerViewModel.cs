@@ -10,8 +10,14 @@ namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
 internal partial class SolutionViewerViewModel
 {
+    #region Fields
+
     private readonly ICurrentSolutionInfo _currentSolutionInfo;
     private readonly IMessenger _messenger;
+
+    #endregion
+
+    #region Constructor
 
     public SolutionViewerViewModel(ICurrentSolutionInfo currentSolutionInfo, IMessenger messenger)
     {
@@ -20,6 +26,9 @@ internal partial class SolutionViewerViewModel
 
         _messenger.Register<SolutionLoadedEvent>(this, SolutionLoadedHandler);
     }
+    #endregion
+
+    #region Properties
 
     /// <summary>
     /// Was solution loaded?
@@ -41,11 +50,14 @@ internal partial class SolutionViewerViewModel
         });
     }
 
-
     /// <summary>
     /// Projects in .NET solution
     /// </summary>
     public ObservableCollection<ProjectData> SolutionProjects { get; set; } = new ObservableCollection<ProjectData>();
+
+    #endregion
+
+    #region Event Handlers
 
     /// <summary>
     /// This handler is executed when a solution was loaded into application.
@@ -66,4 +78,6 @@ internal partial class SolutionViewerViewModel
             IsSolutionLoaded = false;
         }
     }
+
+    #endregion
 }

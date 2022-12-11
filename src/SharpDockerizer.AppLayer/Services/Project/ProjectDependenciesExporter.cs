@@ -1,8 +1,6 @@
 ﻿using ByteDev.DotNet.Project;
-using SharpDockerizer.Core;
 using SharpDockerizer.Core.Models;
 using SharpDockerizer.AppLayer.Contracts;
-using System.Xml.Linq;
 
 namespace SharpDockerizer.AppLayer.Services.Project;
 public class ProjectDependenciesExporter : IProjectDependenciesExporter
