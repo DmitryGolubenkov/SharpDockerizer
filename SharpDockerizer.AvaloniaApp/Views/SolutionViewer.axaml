@@ -1,0 +1,45 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer.AvaloniaUI"
+			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+			 DataContext="{local:DISource Type=vms:SolutionViewerViewModel}"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SharpDockerizer.AvaloniaUI.Views.SolutionViewer"
+			 xmlns:mati="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 >
+	<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
+		<DockPanel Margin="10" VerticalAlignment="Stretch">
+			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}" BorderThickness="0,0,0,1">
+				<WrapPanel>
+					<mati:MaterialIcon Kind="FileTree" />
+					<TextBlock Margin="8"
+							   FontSize="16">Solution Viewer</TextBlock>
+				</WrapPanel>
+			</Border>
+			<TextBlock DockPanel.Dock="Top" 
+					   TextWrapping="Wrap" 
+					   IsVisible="{Binding !IsSolutionLoaded}"
+					   HorizontalAlignment="Center"
+					   VerticalAlignment="Center"
+					   Margin="0,16"
+					   >Load a .NET solution to view included projects.</TextBlock>
+			<ScrollViewer DockPanel.Dock="Top" 
+						  Margin="10" 
+						  IsVisible="{Binding IsSolutionLoaded}" 
+						  VerticalAlignment="Stretch">
+				<ListBox Items="{Binding SolutionProjects}" SelectedItem="{Binding SelectedProject}">
+					<ListBox.ItemTemplate>
+						<DataTemplate>
+							<WrapPanel>
+								<mati:MaterialIcon Kind="ApplicationBracesOutline" />
+								<TextBlock Margin="8,0,0,0" Text="{Binding Path=ProjectName}"/>
+							</WrapPanel>
+						</DataTemplate>
+					</ListBox.ItemTemplate>
+				</ListBox>
+			</ScrollViewer>
+		</DockPanel>
+	</Border>
+</UserControl>

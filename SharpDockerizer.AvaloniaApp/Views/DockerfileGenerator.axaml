@@ -1,0 +1,144 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer.AvaloniaUI"
+			 xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
+			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+			 DataContext="{local:DISource Type=vms:DockerfileGeneratorViewModel}"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SharpDockerizer.AvaloniaUI.Views.DockerfileGenerator"
+			 xmlns:mati="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+>
+
+	<!-- Project Settings -->
+	<Grid ColumnDefinitions="800, 2, *"
+		  IsVisible="{Binding IsProjectSelected}"
+		  VerticalAlignment="Stretch"
+		  >
+
+		<ScrollViewer Grid.Column="0">
+			<DockPanel Margin="8" LastChildFill="False">
+				<!-- Header -->
+				<Border DockPanel.Dock="Top" 
+						BorderBrush="{DynamicResource MaterialDesignCardBackground}" 
+						BorderThickness="0,0,0,1" 
+						Margin="0,0,0,8"
+						HorizontalAlignment="Stretch">
+					<WrapPanel>
+						<mati:MaterialIcon Kind="ApplicationBraces" />
+						<TextBlock Text="{Binding SelectedProjectName}"
+								   FontSize="16"
+								   Margin="8" />
+					</WrapPanel>
+				</Border>
+
+				<!-- Exposed ports part -->
+				<Expander Header="Exposed ports" 
+						  Margin="0,0,0,8"
+						  HorizontalAlignment="Stretch"
+						  DockPanel.Dock="Top">
+					<StackPanel Orientation="Vertical">
+						<Button Command="{Binding AddExposedPort}" Margin="8">Add Port</Button>
+						<DataGrid Items="{Binding ExposedPorts}"
+								  VerticalAlignment="Stretch"
+								  HorizontalAlignment="Stretch"
+								  Height="320"
+								  AutoGenerateColumns="False"
+								  x:Name="ExposedPortsDataGrid">
+							<DataGrid.Columns>
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate>
+											<Button
+												Classes="Flat"
+												ToolTip.Tip="Remove Port"
+												Command="{Binding DataContext.RemoveExposedPort, ElementName=ExposedPortsDataGrid}"
+												CommandParameter="{Binding}">
+												<mati:MaterialIcon Kind="Delete" Foreground="Red" />
+											</Button>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+								<DataGridTextColumn Header="Port" Binding="{Binding Port}" />
+							</DataGrid.Columns>
+						</DataGrid>
+					</StackPanel>
+				</Expander>
+
+				<!-- Nuget sources part -->
+				<Expander Header="NuGet sources" 
+						  Margin="0,0,0,8"
+						  HorizontalAlignment="Stretch"
+						  DockPanel.Dock="Top">
+					<StackPanel Orientation="Vertical">
+						<Button Command="{Binding AddNuGetSource}" Margin="8">Add new NuGet source</Button>
+						<DataGrid Items="{Binding NuGetSources}"
+								  VerticalAlignment="Stretch"
+								  HorizontalAlignment="Stretch"
+								  Height="320"
+								  AutoGenerateColumns="False"
+								  x:Name="NuGetSourcesDataGrid"
+								  >
+							<DataGrid.Columns>
+								<DataGridTemplateColumn>
+									<DataGridTemplateColumn.CellTemplate>
+										<DataTemplate>
+											<Button
+												Classes="Flat"
+												ToolTip.Tip="Remove NuGet source"
+												Command="{Binding DataContext.RemoveNuGetSource, ElementName=NuGetSourcesDataGrid}"
+												CommandParameter="{Binding}">
+												<mati:MaterialIcon Kind="Delete" Foreground="Red" />
+											</Button>
+										</DataTemplate>
+									</DataGridTemplateColumn.CellTemplate>
+								</DataGridTemplateColumn>
+								<DataGridTextColumn Header="Source Name" Binding="{Binding Name}" />
+								<DataGridTextColumn Header="URL" Binding="{Binding Link}" />
+								<DataGridCheckBoxColumn Header="Authentication required?" Binding="{Binding AuthenticationRequired}" />
+								<DataGridTextColumn Header="Username" Binding="{Binding Username}" />
+							</DataGrid.Columns>
+						</DataGrid>
+					</StackPanel>
+				</Expander>
+
+
+				<Button IsEnabled="{Binding IsProjectSelected}"
+						HorizontalAlignment="Right"
+						Command="{Binding GenerateDockerfile}"
+						DockPanel.Dock="Bottom"
+						Height="35">Generate Dockerfile</Button>
+			</DockPanel>
+		</ScrollViewer>
+
+		<GridSplitter Foreground="{DynamicResource MaterialDesignDivider}"
+					  Grid.Column="1"
+					  ResizeDirection="Columns">
+		</GridSplitter>
+
+		<!-- Dockerfile part -->
+		<DockPanel Grid.Column="2"
+				   Margin="10"
+				   VerticalAlignment="Stretch"
+				   HorizontalAlignment="Stretch">
+			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}" BorderThickness="0,0,0,1">
+				<WrapPanel>
+					<mati:MaterialIcon Kind="Docker" />
+					<TextBlock
+						Margin="8"
+						FontSize="16">Generated Dockerfile</TextBlock>
+				</WrapPanel>
+			</Border>
+			<TextBox
+				DockPanel.Dock="Top"
+				Text="{Binding GeneratedDockerfile}"
+				FontSize="16"
+				BorderBrush="{DynamicResource MaterialDesignCardBackground}"
+				BorderThickness="1"
+				Margin="6"
+				Padding="10"
+				Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"/>
+		</DockPanel>
+	</Grid>
+</UserControl>

@@ -1,0 +1,38 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer.AvaloniaUI"
+			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+			 DataContext="{local:DISource Type=vms:TopBarViewModel}"
+			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="SharpDockerizer.AvaloniaUI.Views.TopBar"
+			 xmlns:mati="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
+			 >
+	<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
+		<Menu Background="{DynamicResource MaterialDesignToolBarBackground}">
+			<MenuItem Header="_File">
+				<MenuItem.Header>
+					<WrapPanel Orientation="Horizontal">
+						<mati:MaterialIcon Kind="File" />
+						<Label Margin="8,0,0,0">_File</Label>
+					</WrapPanel>
+				</MenuItem.Header>
+				<MenuItem Command="{Binding LoadSolution}" Header="_Open Solution"/>
+				<Separator/>
+				<MenuItem Command="{Binding CloseApp}" Header="_Exit"/>
+			</MenuItem>
+
+			<MenuItem Header="_About" Margin="8,0">
+				<MenuItem.Header>
+					<WrapPanel Orientation="Horizontal">
+						<mati:MaterialIcon Kind="About" />
+						<Label Margin="4,0,0,0">_About</Label>
+					</WrapPanel>
+				</MenuItem.Header>
+				<MenuItem Header="Open GitHub page" />
+				<MenuItem Header="About SharpDockerizer.."/>
+			</MenuItem>
+		</Menu>
+	</Border>
+</UserControl>

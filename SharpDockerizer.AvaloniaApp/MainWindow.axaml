@@ -1,0 +1,25 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+		xmlns:views="clr-namespace:SharpDockerizer.AvaloniaUI.Views"
+        mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+        x:Class="SharpDockerizer.AvaloniaUI.MainWindow"
+        Title="SharpDockerizer"
+	>
+	<DockPanel>
+		<views:TopBar DockPanel.Dock="Top" />
+		<SplitView IsPaneOpen="true"
+				   DisplayMode="Inline"
+				   OpenPaneLength="256"
+				   DockPanel.Dock="Top"
+				   >
+			<SplitView.Pane>
+				<views:SolutionViewer/>
+			</SplitView.Pane>
+			
+			<views:DockerfileGenerator />
+		</SplitView>
+
+	</DockPanel>
+</Window>

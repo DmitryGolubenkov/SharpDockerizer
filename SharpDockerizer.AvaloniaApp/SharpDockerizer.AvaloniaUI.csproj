@@ -1,0 +1,45 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net7.0</TargetFramework>
+		<Nullable>enable</Nullable>
+		<!--Avalonia doesen't support TrimMode=link currently,but we are working on that https://github.com/AvaloniaUI/Avalonia/issues/6892 -->
+		<TrimMode>copyused</TrimMode>
+		<BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+	</PropertyGroup>
+	<ItemGroup>
+		<None Remove=".gitignore" />
+	</ItemGroup>
+	<ItemGroup>
+		<!--This helps with theme dll-s trimming.
+	If you will publish your application in self-contained mode with p:PublishTrimmed=true and it will use Fluent theme Default theme will be trimmed from the output and vice versa.
+	https://github.com/AvaloniaUI/Avalonia/issues/5593 -->
+		<TrimmableAssembly Include="Avalonia.Themes.Fluent" />
+		<TrimmableAssembly Include="Avalonia.Themes.Default" />
+	</ItemGroup>
+	<ItemGroup>
+		<PackageReference Include="Avalonia" Version="11.0.0-preview4" />
+		<PackageReference Include="Avalonia.Controls.DataGrid" Version="11.0.0-preview4" />
+		<PackageReference Include="Avalonia.Desktop" Version="11.0.0-preview4" />
+		<!--Condition below is needed to remove Avalonia.Diagnostics package from build output in Release configuration.-->
+		<PackageReference Condition="'$(Configuration)' == 'Debug'" Include="Avalonia.Diagnostics" Version="11.0.0-preview4" />
+		<PackageReference Include="Avalonia.Themes.Fluent" Version="11.0.0-preview4" />
+		<PackageReference Include="CommunityToolkit.Mvvm" Version="8.1.0-preview1" />
+		<PackageReference Include="DialogHost.Avalonia" Version="0.7.0-preview1" />
+		<PackageReference Include="Material.Avalonia" Version="3.0.0-avalonia11-preview2.131-nightly" />
+		<PackageReference Include="Material.Icons.Avalonia" Version="1.2.0" />
+		<PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="7.0.0" />
+		<PackageReference Include="Serilog" Version="2.12.1-dev-01594" />
+		<PackageReference Include="Serilog.Extensions.Logging" Version="3.1.1-dev-10301" />
+		<PackageReference Include="Serilog.Sinks.File" Version="5.0.1-dev-00947" />
+		<PackageReference Include="XamlNameReferenceGenerator" Version="1.5.1" />
+	</ItemGroup>
+	<ItemGroup>
+	  <ProjectReference Include="..\SharpDockerizer.AppLayer\SharpDockerizer.AppLayer.csproj" />
+	  <ProjectReference Include="..\SharpDockerizer.Core\SharpDockerizer.Core.csproj" />
+	</ItemGroup>
+	<ItemGroup>
+	  <Folder Include="Controls\" />
+	  <Folder Include="Services\" />
+	</ItemGroup>
+</Project>
