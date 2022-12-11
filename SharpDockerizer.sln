@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33110.190
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDockerizer.AvaloniaUI", "src\SharpDockerizer.AvaloniaApp\SharpDockerizer.AvaloniaUI.csproj", "{72C18137-0A34-4AA8-BA46-B29216473F66}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDockerizer.AvaloniaUI", "src\SharpDockerizer.AvaloniaUI\SharpDockerizer.AvaloniaUI.csproj", "{72C18137-0A34-4AA8-BA46-B29216473F66}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpDockerizer.AppLayer", "src\SharpDockerizer.AppLayer\SharpDockerizer.AppLayer.csproj", "{CEDCB110-A2C5-4C2F-920D-0863D368BD9A}"
 EndProject
