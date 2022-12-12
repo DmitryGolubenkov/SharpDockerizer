@@ -6,9 +6,15 @@ using System.Text;
 namespace SharpDockerizer.AppLayer.Generation;
 public class DockerfileGenerator : IDockerfileGenerator
 {
+    #region Fields
+
     private readonly IAspNetDockerImageVersionSelector _aspNetDockerImageVersionSelector;
     private readonly IDotNetSdkImageVersionSelector _dotNetSdkImageVersionSelector;
     private readonly IProjectDependenciesExporter _projectDependenciesExporter;
+
+    #endregion
+
+    #region Constructor
 
     public DockerfileGenerator(
         IAspNetDockerImageVersionSelector aspNetDockerImageVersionSelector,
@@ -19,6 +25,8 @@ public class DockerfileGenerator : IDockerfileGenerator
         _dotNetSdkImageVersionSelector = dotNetSdkImageVersionSelector;
         _projectDependenciesExporter = projectDependenciesExporter;
     }
+
+    #endregion
 
     public string Execute(DockerfileGeneratorInputModel model)
     {
@@ -46,25 +54,20 @@ public class DockerfileGenerator : IDockerfileGenerator
             FROM {_aspNetDockerImageVersionSelector.GetLinkToImageForVersion(model.SelectedProjectData.DotNetVersion)} AS base
             WORKDIR /app
             {exposedPorts}
-
             FROM {_dotNetSdkImageVersionSelector.GetLinkToImageForVersion(model.SelectedProjectData.DotNetVersion)} AS build
             {GetArgumentsString(dockerfileArgumentsList)}
             WORKDIR /src
 
             COPY ["{model.SelectedProjectData.RelativePath}", "{projectFolderRelativePath}/"]
             {copyOnlyProjFileInstructions}
-
             {nuGetInstructions}
             RUN dotnet restore "{model.SelectedProjectData.RelativePath}"
 
             COPY ["{projectFolderRelativePath}/", "{projectFolderRelativePath}/"]
             {copyEverythingInstructions}
-
-            WORKDIR "{projectFolderRelativePath}"
-            RUN dotnet build "{projectFileName}" -c Release -o /app/build
-            
             FROM build AS publish
-            RUN dotnet publish "{projectFileName}" -c Release -o /app/publish
+            WORKDIR "{projectFolderRelativePath}"
+            RUN dotnet publish "{projectFileName}" --no-restore -c Release -o /app/publish /p:UseAppHost=false
             
             FROM base AS final
             WORKDIR /app
@@ -76,6 +79,9 @@ public class DockerfileGenerator : IDockerfileGenerator
         return result.Replace('\\', '/');
     }
 
+    /// <summary>
+    /// Converts list of strings ("ARG ..."; "ARG...") into one string, each string on new line.
+    /// </summary>
     private string GetArgumentsString(List<string> dockerfileArgumentsList)
     {
         var sb = new StringBuilder();
@@ -88,6 +94,12 @@ public class DockerfileGenerator : IDockerfileGenerator
         return sb.ToString();
     }
 
+    /// <summary>
+    /// Generates NuGet instructions for simple authentication.
+    /// </summary>
+    /// <param name="nuGetSources">List of NuGet sources.</param>
+    /// <param name="dockerfileArgumentsList">List of strings, that will be modified.</param>
+    /// <returns>"RUN dotnet nuget add source ..."  "RUN dotnet nuget update source..." as one multiline string. </returns>
     private string GetNuGetInstructions(List<NuGetSource> nuGetSources, ref List<string> dockerfileArgumentsList)
     {
         var sb = new StringBuilder();
@@ -110,6 +122,11 @@ public class DockerfileGenerator : IDockerfileGenerator
         return sb.ToString();
     }
 
+    /// <summary>
+    /// 
+    /// </summary>
+    /// <param name="exposedPorts">List of ports to expose.</param>
+    /// <returns>A multiline string like "EXPOSE 80 \n EXPOSE 443"</returns>
     private string GetExposedPorts(List<int> exposedPorts)
     {
         var sb = new StringBuilder();
