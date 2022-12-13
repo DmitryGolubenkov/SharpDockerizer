@@ -11,6 +11,7 @@ public class DockerfileGenerator : IDockerfileGenerator
     private readonly IAspNetDockerImageVersionSelector _aspNetDockerImageVersionSelector;
     private readonly IDotNetSdkImageVersionSelector _dotNetSdkImageVersionSelector;
     private readonly IProjectDependenciesExporter _projectDependenciesExporter;
+    private readonly ICurrentSolutionInfo _currentSolutionInfo;
 
     #endregion
 
@@ -19,11 +20,13 @@ public class DockerfileGenerator : IDockerfileGenerator
     public DockerfileGenerator(
         IAspNetDockerImageVersionSelector aspNetDockerImageVersionSelector,
         IDotNetSdkImageVersionSelector dotNetSdkImageVersionSelector,
-        IProjectDependenciesExporter projectDependenciesExporter)
+        IProjectDependenciesExporter projectDependenciesExporter,
+        ICurrentSolutionInfo currentSolutionInfo)
     {
         _aspNetDockerImageVersionSelector = aspNetDockerImageVersionSelector;
         _dotNetSdkImageVersionSelector = dotNetSdkImageVersionSelector;
         _projectDependenciesExporter = projectDependenciesExporter;
+        _currentSolutionInfo = currentSolutionInfo;
     }
 
     #endregion
@@ -43,7 +46,8 @@ public class DockerfileGenerator : IDockerfileGenerator
 
         // NuGet repos
         string nuGetInstructions = GetNuGetInstructions(model.NuGetSources, ref dockerfileArgumentsList);
-
+        // NuGet configs
+        string detectedNuGetConfigs = GetNuGetConfigFiles(model.SelectedProjectData);
         // Copy instructions for project files that will be used to restore packages
         var copyOnlyProjFileInstructions = GetCopyProjFilesDockerfileInstructions(projectDependencies);
         // Copy instructions for other files that will be used to build and publish assemblies 
@@ -58,6 +62,7 @@ public class DockerfileGenerator : IDockerfileGenerator
             {GetArgumentsString(dockerfileArgumentsList)}
             WORKDIR /src
 
+            {detectedNuGetConfigs}
             COPY ["{model.SelectedProjectData.RelativePath}", "{projectFolderRelativePath}/"]
             {copyOnlyProjFileInstructions}
             {nuGetInstructions}
@@ -77,6 +82,47 @@ public class DockerfileGenerator : IDockerfileGenerator
 
         // Fix Windows line separators
         return result.Replace('\\', '/');
+    }
+
+    /// <summary>
+    /// Checks if "nuget.config" file exists in directories from solution folder 
+    /// to project folder and generates COPY instructions for them.
+    /// </summary>
+    /// <param name="selectedProjectData">Data about selected project</param>
+    /// <returns>Multiline string that contains COPY instructions for nuget.config</returns>
+    private string GetNuGetConfigFiles(ProjectData selectedProjectData)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        // Search from project folder back to solution folder
+        var currentCheckedPath = new DirectoryInfo(Path.GetDirectoryName(selectedProjectData.AbsolutePathToProjFile));
+        while (currentCheckedPath.FullName != _currentSolutionInfo.CurrentSolution.RootPath)
+        {
+            SearchDirectory();
+            currentCheckedPath = currentCheckedPath.Parent;
+        }
+
+        // Search root directory too
+        SearchDirectory();
+
+
+        return sb.ToString();
+
+        /// ====================
+        /// Searches a directory for nuget.config files. If found, appends a 
+        /// copy command to output that contains relative paths to files.
+        /// ====================
+        void SearchDirectory()
+        {
+            foreach (var configPath in currentCheckedPath.EnumerateFiles()
+           .Where(filePath => Path.GetFileName(filePath.Name).ToLowerInvariant() == "nuget.config"))
+            {
+                var source = Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.RootPath, configPath.FullName);
+                var destination = Path.GetDirectoryName(Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.RootPath, configPath.FullName));
+                destination = !string.IsNullOrEmpty(destination) ? $"{destination}/" : "." ;
+                sb.AppendLine($"COPY [\"{source}\", \"{destination}\"]");
+            }
+        }
     }
 
     /// <summary>
