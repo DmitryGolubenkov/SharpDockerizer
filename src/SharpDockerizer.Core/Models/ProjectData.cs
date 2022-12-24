@@ -19,7 +19,31 @@ public class ProjectData
     /// </summary>
     public required string RelativePath { get; set; }
 
+    /// <summary>
+    /// Checks if all properties of ProjectData are equal.
+    /// </summary>
+    public override bool Equals(object? obj)
+    {
+        if (obj is ProjectData projectData)
+        {
+            return ProjectName == projectData.ProjectName 
+                && AbsolutePathToProjFile== projectData.AbsolutePathToProjFile
+                && DotNetVersion == projectData.DotNetVersion
+                && RelativePath == projectData.RelativePath;
+        }
+        
+        return false;
+    }
 
-    //public required bool IsAspNetCoreProject { get; set; }
-    //public string? AspNetCoreVersion { get; set; }
+    /// <summary>
+    /// Updates reference with data from another instance.
+    /// </summary>
+    /// <param name="projectData">Instance to copy data from.</param>
+    public void UpdateWithData(ProjectData projectData)
+    {
+        ProjectName = projectData.ProjectName;
+        AbsolutePathToProjFile = projectData.AbsolutePathToProjFile;
+        RelativePath = projectData.RelativePath;
+        DotNetVersion= projectData.DotNetVersion;
+    }
 }

@@ -8,6 +8,7 @@ using SharpDockerizer.Core.Models;
 using SharpDockerizer.AvaloniaUI.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
@@ -35,30 +36,32 @@ internal partial class DockerfileGeneratorViewModel
 
     private readonly IDockerfileGenerator _dockerfileGenerator;
     private readonly IMessenger _messenger;
+    private readonly ISolutionUpdater _solutionUpdater;
+    private readonly ICurrentSolutionInfo _currentSolutionInfo;
     private ProjectData? _selectedProjectData;
 
     #endregion
 
     #region Constructor
 
-    public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator, IMessenger messenger)
+    public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator, 
+        IMessenger messenger, 
+        ISolutionUpdater solutionUpdater, 
+        ICurrentSolutionInfo currentSolutionInfo)
     {
         _dockerfileGenerator = dockerfileGenerator;
         _messenger = messenger;
+        _solutionUpdater = solutionUpdater;
+        _currentSolutionInfo = currentSolutionInfo;
         _messenger.Register<ProjectSelectedEvent>(this, OnProjectSelectedHandler);
-        _messenger.Register<SolutionLoadedEvent>(this, OnSolutionLoadedEvent);
     }
+
+
 
     #endregion
 
     #region Event Handlers
 
-    private void OnSolutionLoadedEvent(object recipient, SolutionLoadedEvent message)
-    {
-        /*IsProjectSelected = false;
-        _selectedProjectData = null;
-        SelectedProjectName = null;*/
-    }
 
     private void OnProjectSelectedHandler(object sender, ProjectSelectedEvent? args)
     {
@@ -75,17 +78,33 @@ internal partial class DockerfileGeneratorViewModel
             SelectedProjectName = null;
         }
     }
+
     #endregion
 
     #region Relay Commands
 
     [RelayCommand]
-    public void GenerateDockerfile()
+    public async Task GenerateDockerfile()
     {
-        if (_selectedProjectData is null)
-            return;
+        // Refresh solution to avoid reading stale data for dockerfile.
+        var solutionChanged = await _solutionUpdater.RefreshSolution();
+        
+        // If selected project data changed - refresh data
 
+        if(solutionChanged)
+        {
+            var newData = _currentSolutionInfo.Projects.FirstOrDefault(project => project.ProjectName == _selectedProjectData.ProjectName);
 
+            if (newData is null)
+            {
+                // TODO: handle that selected project was removed. Notify user, solution viewer and don't crash the app.
+                return;
+            }
+
+            _selectedProjectData.UpdateWithData(newData);
+        }
+
+        // Generate Dockerfile
         var result = _dockerfileGenerator.Execute(new DockerfileGeneratorInputModel
         {
             SelectedProjectData = _selectedProjectData,
@@ -93,6 +112,13 @@ internal partial class DockerfileGeneratorViewModel
             NuGetSources = NuGetSources.ToList()
         });
 
+        // Notify app about solution refresh
+        if (solutionChanged)
+        {
+            _messenger.Send<SolutionRefreshedEvent>();
+        }
+
+        // Display result
         GeneratedDockerfile = result;
     }
 

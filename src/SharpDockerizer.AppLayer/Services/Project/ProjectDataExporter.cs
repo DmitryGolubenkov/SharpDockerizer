@@ -1,5 +1,4 @@
-﻿using SharpDockerizer.Core;
-using SharpDockerizer.Core.Models;
+﻿using SharpDockerizer.Core.Models;
 using SharpDockerizer.AppLayer.Contracts;
 using System.Xml.Linq;
 
@@ -15,7 +14,7 @@ public class ProjectDataExporter : IProjectDataExporter
 
     public async Task<ProjectData> GetProjectData(string path)
     {
-        var relativePath = Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.RootPath, path);
+        var relativePath = Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.SolutionRootDirectoryPath, path);
         var cancellationToken = new CancellationTokenSource().Token;
         using (var fileStream = File.OpenRead(path))
         {
@@ -23,8 +22,6 @@ public class ProjectDataExporter : IProjectDataExporter
 
             var projectName = Path.GetFileNameWithoutExtension(path);
             var version = xml.Element("Project").Element("PropertyGroup").Element("TargetFramework").Value;
-            var referencedProjects = xml.Root.Elements("ProjectReference").Select(x => x.Attribute("Include")?.Value);
-
 
             var projectData = new ProjectData()
             {

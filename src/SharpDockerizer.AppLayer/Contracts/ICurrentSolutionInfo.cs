@@ -10,6 +10,7 @@ public interface ICurrentSolutionInfo
     /// Parsed solution data.
     /// </summary>
     SolutionData? CurrentSolution { get; set; }
+
     /// <summary>
     /// Projects inside solution.
     /// </summary>

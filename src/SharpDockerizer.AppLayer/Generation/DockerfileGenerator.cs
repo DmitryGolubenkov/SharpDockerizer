@@ -21,7 +21,8 @@ public class DockerfileGenerator : IDockerfileGenerator
         IAspNetDockerImageVersionSelector aspNetDockerImageVersionSelector,
         IDotNetSdkImageVersionSelector dotNetSdkImageVersionSelector,
         IProjectDependenciesExporter projectDependenciesExporter,
-        ICurrentSolutionInfo currentSolutionInfo)
+        ICurrentSolutionInfo currentSolutionInfo,
+        ISolutionUpdater solutionUpdater)
     {
         _aspNetDockerImageVersionSelector = aspNetDockerImageVersionSelector;
         _dotNetSdkImageVersionSelector = dotNetSdkImageVersionSelector;
@@ -31,6 +32,10 @@ public class DockerfileGenerator : IDockerfileGenerator
 
     #endregion
 
+    /// <summary>
+    /// Generates a Dockerfile using parsed solution data and user input.
+    /// </summary>
+    /// <returns>Dockerfile text as a multiline string.</returns>
     public string Execute(DockerfileGeneratorInputModel model)
     {
         // Prepare data
@@ -96,7 +101,7 @@ public class DockerfileGenerator : IDockerfileGenerator
 
         // Search from project folder back to solution folder
         var currentCheckedPath = new DirectoryInfo(Path.GetDirectoryName(selectedProjectData.AbsolutePathToProjFile));
-        while (currentCheckedPath.FullName != _currentSolutionInfo.CurrentSolution.RootPath)
+        while (currentCheckedPath.FullName != _currentSolutionInfo.CurrentSolution.SolutionRootDirectoryPath)
         {
             SearchDirectory();
             currentCheckedPath = currentCheckedPath.Parent;
@@ -117,8 +122,8 @@ public class DockerfileGenerator : IDockerfileGenerator
             foreach (var configPath in currentCheckedPath.EnumerateFiles()
            .Where(filePath => Path.GetFileName(filePath.Name).ToLowerInvariant() == "nuget.config"))
             {
-                var source = Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.RootPath, configPath.FullName);
-                var destination = Path.GetDirectoryName(Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.RootPath, configPath.FullName));
+                var source = Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.SolutionRootDirectoryPath, configPath.FullName);
+                var destination = Path.GetDirectoryName(Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.SolutionRootDirectoryPath, configPath.FullName));
                 destination = !string.IsNullOrEmpty(destination) ? $"{destination}/" : "." ;
                 sb.AppendLine($"COPY [\"{source}\", \"{destination}\"]");
             }

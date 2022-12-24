@@ -12,22 +12,35 @@
 	<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
 		<DockPanel Margin="10" VerticalAlignment="Stretch">
 			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}" BorderThickness="0,0,0,1">
-				<WrapPanel>
-					<mati:MaterialIcon Kind="FileTree" />
+				<DockPanel LastChildFill="False">
+					<mati:MaterialIcon Kind="FileTree" DockPanel.Dock="Left" />
 					<TextBlock Margin="8"
-							   FontSize="16">Solution Viewer</TextBlock>
-				</WrapPanel>
+							   FontSize="16"
+							   DockPanel.Dock="Left">Solution Viewer</TextBlock>
+					<Button Command="{Binding RefreshSolution}"
+							DockPanel.Dock="Right"
+							Background="Transparent"
+							IsVisible="{Binding IsSolutionLoaded}"
+							Classes="Flat Light"
+							Foreground="White"
+							Padding="4"
+							Height="25"
+							Width="25"
+							>
+							<mati:MaterialIcon Kind="Refresh" ToolTip.Tip="Refresh Solution" />
+					</Button>
+				</DockPanel>
 			</Border>
-			<TextBlock DockPanel.Dock="Top" 
-					   TextWrapping="Wrap" 
+			<TextBlock DockPanel.Dock="Top"
+					   TextWrapping="Wrap"
 					   IsVisible="{Binding !IsSolutionLoaded}"
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"
 					   Margin="0,16"
 					   >Load a .NET solution to view included projects.</TextBlock>
-			<ScrollViewer DockPanel.Dock="Top" 
-						  Margin="10" 
-						  IsVisible="{Binding IsSolutionLoaded}" 
+			<ScrollViewer DockPanel.Dock="Top"
+						  Margin="10"
+						  IsVisible="{Binding IsSolutionLoaded}"
 						  VerticalAlignment="Stretch">
 				<ListBox Items="{Binding SolutionProjects}" SelectedItem="{Binding SelectedProject}">
 					<ListBox.ItemTemplate>

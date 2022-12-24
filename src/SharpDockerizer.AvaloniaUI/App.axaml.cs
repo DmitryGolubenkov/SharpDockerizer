@@ -57,6 +57,7 @@ public partial class App : Application
         serviceCollection.AddSingleton<IMessenger, StrongReferenceMessenger>();
         serviceCollection.AddSingleton<ICurrentSolutionInfo, CurrentSolutionInfo>();
         serviceCollection.AddTransient<ISolutionLoader, SolutionLoader>();
+        serviceCollection.AddTransient<ISolutionUpdater, SolutionLoader>();
         serviceCollection.AddTransient<IProjectDataExporter, ProjectDataExporter>();
         serviceCollection.AddTransient<IDockerfileGenerator, DockerfileGenerator>();
         serviceCollection.AddTransient<IAspNetDockerImageVersionSelector, AspNetDockerImageVersionSelector>();
