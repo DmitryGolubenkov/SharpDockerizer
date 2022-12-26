@@ -127,7 +127,6 @@ internal partial class SolutionViewerViewModel
         if (_isSolutionLoaded && await _solutionUpdater.RefreshSolution())
         {
             _messenger.Send<SolutionRefreshedEvent>();
-
         }
     }
 

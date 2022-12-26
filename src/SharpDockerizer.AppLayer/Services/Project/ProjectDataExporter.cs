@@ -1,6 +1,7 @@
 ﻿using SharpDockerizer.Core.Models;
 using SharpDockerizer.AppLayer.Contracts;
 using System.Xml.Linq;
+using Serilog;
 
 namespace SharpDockerizer.AppLayer.Services.Project;
 public class ProjectDataExporter : IProjectDataExporter
@@ -14,6 +15,7 @@ public class ProjectDataExporter : IProjectDataExporter
 
     public async Task<ProjectData> GetProjectData(string path)
     {
+        Log.Information($"Extracting data from project at path {path}");
         var relativePath = Path.GetRelativePath(_currentSolutionInfo.CurrentSolution.SolutionRootDirectoryPath, path);
         var cancellationToken = new CancellationTokenSource().Token;
         using (var fileStream = File.OpenRead(path))
@@ -30,6 +32,8 @@ public class ProjectDataExporter : IProjectDataExporter
                 AbsolutePathToProjFile = path,
                 RelativePath = relativePath
             };
+
+            Log.Information($"Project data: {projectData}");
 
             return projectData;
         }

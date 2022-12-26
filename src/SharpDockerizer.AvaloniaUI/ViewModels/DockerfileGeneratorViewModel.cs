@@ -9,6 +9,7 @@ using SharpDockerizer.AvaloniaUI.Models;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
+using Serilog;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
@@ -88,9 +89,9 @@ internal partial class DockerfileGeneratorViewModel
     {
         // Refresh solution to avoid reading stale data for dockerfile.
         var solutionChanged = await _solutionUpdater.RefreshSolution();
-        
-        // If selected project data changed - refresh data
 
+        Log.Information($"Solution was changed: {solutionChanged}");
+        // If selected project data changed - refresh data
         if(solutionChanged)
         {
             var newData = _currentSolutionInfo.Projects.FirstOrDefault(project => project.ProjectName == _selectedProjectData.ProjectName);

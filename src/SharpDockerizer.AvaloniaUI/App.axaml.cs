@@ -6,7 +6,6 @@ using SharpDockerizer.AppLayer.Contracts;
 using SharpDockerizer.AppLayer.Generation;
 using SharpDockerizer.AppLayer.Services.Project;
 using SharpDockerizer.AppLayer.Services.Solution;
-using SharpDockerizer.AvaloniaUI;
 using SharpDockerizer.AvaloniaUI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;

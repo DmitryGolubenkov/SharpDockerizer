@@ -20,6 +20,10 @@ internal class Program
         {
             Log.Fatal(ex, "Unhandled exception occured!");
         }
+        finally
+        {
+            Log.CloseAndFlush();
+        }
     }
 
     // Avalonia configuration, don't remove; also used by visual designer.

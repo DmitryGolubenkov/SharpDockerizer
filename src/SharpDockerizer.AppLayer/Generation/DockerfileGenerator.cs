@@ -2,6 +2,7 @@
 using SharpDockerizer.AppLayer.Contracts;
 using SharpDockerizer.AppLayer.Models;
 using System.Text;
+using Serilog;
 
 namespace SharpDockerizer.AppLayer.Generation;
 public class DockerfileGenerator : IDockerfileGenerator
@@ -38,28 +39,32 @@ public class DockerfileGenerator : IDockerfileGenerator
     /// <returns>Dockerfile text as a multiline string.</returns>
     public string Execute(DockerfileGeneratorInputModel model)
     {
-        // Prepare data
-        var projectFileName = Path.GetFileName(model.SelectedProjectData.AbsolutePathToProjFile); // Ex: Project.File.Name.csproj
-        var projectFolderRelativePath = Path.GetDirectoryName(model.SelectedProjectData.RelativePath); // Ex: /src/Project.API/
+        try
+        {
+            Log.Information("Generating dockerfile for model:", model);
 
-        var exposedPorts = GetExposedPorts(model.ExposedPorts);
+            // Prepare data
+            var projectFileName = Path.GetFileName(model.SelectedProjectData.AbsolutePathToProjFile); // Ex: Project.File.Name.csproj
+            var projectFolderRelativePath = Path.GetDirectoryName(model.SelectedProjectData.RelativePath); // Ex: /src/Project.API/
 
-        var projectDependencies = _projectDependenciesExporter.GetDependencies(model.SelectedProjectData);
+            var exposedPorts = GetExposedPorts(model.ExposedPorts);
 
-        // Dockerfile arguments
-        var dockerfileArgumentsList = new List<string>();
+            var projectDependencies = _projectDependenciesExporter.GetDependencies(model.SelectedProjectData);
 
-        // NuGet repos
-        string nuGetInstructions = GetNuGetInstructions(model.NuGetSources, ref dockerfileArgumentsList);
-        // NuGet configs
-        string detectedNuGetConfigs = GetNuGetConfigFiles(model.SelectedProjectData);
-        // Copy instructions for project files that will be used to restore packages
-        var copyOnlyProjFileInstructions = GetCopyProjFilesDockerfileInstructions(projectDependencies);
-        // Copy instructions for other files that will be used to build and publish assemblies 
-        var copyEverythingInstructions = GetCopyEverythingDockerfileInstructions(projectDependencies);
+            // Dockerfile arguments
+            var dockerfileArgumentsList = new List<string>();
 
-        //Build resulting docker file
-        var result = $"""
+            // NuGet repos
+            string nuGetInstructions = GetNuGetInstructions(model.NuGetSources, ref dockerfileArgumentsList);
+            // NuGet configs
+            string detectedNuGetConfigs = GetNuGetConfigFiles(model.SelectedProjectData);
+            // Copy instructions for project files that will be used to restore packages
+            var copyOnlyProjFileInstructions = GetCopyProjFilesDockerfileInstructions(projectDependencies);
+            // Copy instructions for other files that will be used to build and publish assemblies 
+            var copyEverythingInstructions = GetCopyEverythingDockerfileInstructions(projectDependencies);
+
+            //Build resulting docker file
+            var result = $"""
             FROM {_aspNetDockerImageVersionSelector.GetLinkToImageForVersion(model.SelectedProjectData.DotNetVersion)} AS base
             WORKDIR /app
             {exposedPorts}
@@ -85,8 +90,16 @@ public class DockerfileGenerator : IDockerfileGenerator
             ENTRYPOINT ["dotnet", "{model.SelectedProjectData.ProjectName}.dll"]
             """;
 
-        // Fix Windows line separators
-        return result.Replace('\\', '/');
+            Log.Information("Dockerfile generated successfuly");
+
+            // Fix Windows line separators
+            return result.Replace('\\', '/');
+        }
+        catch (Exception ex)
+        {
+            Log.Error("Exception while generating Dockerfile!", ex);
+            return "";
+        }
     }
 
     /// <summary>
