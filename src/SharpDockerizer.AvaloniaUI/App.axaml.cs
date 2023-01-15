@@ -10,7 +10,6 @@ using SharpDockerizer.AvaloniaUI.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Serilog;
 using System;
-
 namespace SharpDockerizer.AvaloniaUI;
 public partial class App : Application
 {
@@ -36,6 +35,7 @@ public partial class App : Application
             desktop.MainWindow = new MainWindow();
         }
         Log.Information("Application started");
+
         base.OnFrameworkInitializationCompleted();
     }
 

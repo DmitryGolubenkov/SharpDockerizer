@@ -18,11 +18,11 @@
 		  >
 
 		<ScrollViewer Grid.Column="0">
-			<DockPanel Margin="8" LastChildFill="False">
+			<DockPanel Margin="10" LastChildFill="False">
 				<!-- Header -->
-				<Border DockPanel.Dock="Top" 
-						BorderBrush="{DynamicResource MaterialDesignCardBackground}" 
-						BorderThickness="0,0,0,1" 
+				<Border DockPanel.Dock="Top"
+						BorderBrush="{DynamicResource MaterialDesignCardBackground}"
+						BorderThickness="0,0,0,1"
 						Margin="0,0,0,8"
 						HorizontalAlignment="Stretch">
 					<WrapPanel>
@@ -34,7 +34,7 @@
 				</Border>
 
 				<!-- Exposed ports part -->
-				<Expander Header="Exposed ports" 
+				<Expander Header="Exposed ports"
 						  Margin="0,0,0,8"
 						  HorizontalAlignment="Stretch"
 						  DockPanel.Dock="Top">
@@ -67,7 +67,7 @@
 				</Expander>
 
 				<!-- Nuget sources part -->
-				<Expander Header="NuGet sources" 
+				<Expander Header="NuGet sources"
 						  Margin="0,0,0,8"
 						  HorizontalAlignment="Stretch"
 						  DockPanel.Dock="Top">
@@ -123,13 +123,29 @@
 				   VerticalAlignment="Stretch"
 				   HorizontalAlignment="Stretch">
 			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}" BorderThickness="0,0,0,1">
-				<WrapPanel>
-					<mati:MaterialIcon Kind="Docker" />
+				<DockPanel DockPanel.Dock="Top" LastChildFill="False">
+					<mati:MaterialIcon Kind="Docker" DockPanel.Dock="Left" />
 					<TextBlock
+						DockPanel.Dock="Left"
 						Margin="8"
 						FontSize="16">Generated Dockerfile</TextBlock>
-				</WrapPanel>
+
+
+					<Button IsEnabled="{Binding DockerfileWasGenerated}" Classes="Flat Light Topbar" DockPanel.Dock="Right" Command="{Binding CopyToClipboard}" ToolTip.Tip="Copy to clipboard">
+						<mati:MaterialIcon Kind="ContentCopy" />
+					</Button>
+					<Button IsEnabled="{Binding DockerfileWasGenerated}" Classes="Flat Light Topbar" DockPanel.Dock="Right" Command="{Binding SaveToChosenFolder}" ToolTip.Tip="Save to..">
+						<mati:MaterialIcon Kind="ContentSave" />
+					</Button>
+					<Button IsEnabled="{Binding DockerfileWasGenerated}" Classes="Flat Light Topbar" DockPanel.Dock="Right" Command="{Binding SaveToProjectFolder}" ToolTip.Tip="Save to project folder">
+						<mati:MaterialIcon Kind="FileExport" />
+					</Button>
+				</DockPanel>
 			</Border>
+
+
+
+
 			<TextBox
 				DockPanel.Dock="Top"
 				Text="{Binding GeneratedDockerfile}"

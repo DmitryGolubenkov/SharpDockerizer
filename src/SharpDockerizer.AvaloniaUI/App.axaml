@@ -5,9 +5,17 @@
 			 xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
 			 >
 	<Application.Styles>
-		<StyleInclude Source="avares://DialogHost.Avalonia/Styles.xaml"/>
 		<StyleInclude Source="avares://Material.Icons.Avalonia/App.xaml" />
 		<themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Lime" />
 		<StyleInclude Source="avares://Material.DataGrid/DataGrid.xaml" />
+
+
+		<Style Selector="Button.Topbar">
+			<Setter Property="Foreground" Value="White" />
+			<Setter Property="Height" Value="35" />
+			<Setter Property="Width" Value="35" />
+			<Setter Property="CornerRadius" Value="35" />
+		</Style>
+
 	</Application.Styles>
 </Application>

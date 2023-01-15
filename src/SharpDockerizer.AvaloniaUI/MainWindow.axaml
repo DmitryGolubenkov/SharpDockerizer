@@ -7,7 +7,7 @@
         x:Class="SharpDockerizer.AvaloniaUI.MainWindow"
         Title="SharpDockerizer"
 	>
-	<DockPanel>
+	<DockPanel>	
 		<views:TopBar DockPanel.Dock="Top" />
 		<SplitView IsPaneOpen="true"
 				   DisplayMode="Inline"
@@ -17,9 +17,8 @@
 			<SplitView.Pane>
 				<views:SolutionViewer/>
 			</SplitView.Pane>
-			
+
 			<views:DockerfileGenerator />
 		</SplitView>
-
 	</DockPanel>
 </Window>

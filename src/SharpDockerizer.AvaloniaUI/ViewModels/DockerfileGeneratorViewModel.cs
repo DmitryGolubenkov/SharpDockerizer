@@ -10,6 +10,10 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
 using Serilog;
+using Avalonia;
+using System.IO;
+using Avalonia.Controls.ApplicationLifetimes;
+using Avalonia.Platform.Storage;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
@@ -23,6 +27,8 @@ internal partial class DockerfileGeneratorViewModel
     private string? _selectedProjectName;
     [ObservableProperty]
     private string? _generatedDockerfile;
+    [ObservableProperty]
+    private bool _dockerfileWasGenerated;
 
     public ObservableCollection<ExposedPort> ExposedPorts { get; set; } = new ObservableCollection<ExposedPort>()
     {
@@ -45,15 +51,16 @@ internal partial class DockerfileGeneratorViewModel
 
     #region Constructor
 
-    public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator, 
-        IMessenger messenger, 
-        ISolutionUpdater solutionUpdater, 
+    public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator,
+        IMessenger messenger,
+        ISolutionUpdater solutionUpdater,
         ICurrentSolutionInfo currentSolutionInfo)
     {
         _dockerfileGenerator = dockerfileGenerator;
         _messenger = messenger;
         _solutionUpdater = solutionUpdater;
         _currentSolutionInfo = currentSolutionInfo;
+
         _messenger.Register<ProjectSelectedEvent>(this, OnProjectSelectedHandler);
     }
 
@@ -92,7 +99,7 @@ internal partial class DockerfileGeneratorViewModel
 
         Log.Information($"Solution was changed: {solutionChanged}");
         // If selected project data changed - refresh data
-        if(solutionChanged)
+        if (solutionChanged)
         {
             var newData = _currentSolutionInfo.Projects.FirstOrDefault(project => project.ProjectName == _selectedProjectData.ProjectName);
 
@@ -121,6 +128,7 @@ internal partial class DockerfileGeneratorViewModel
 
         // Display result
         GeneratedDockerfile = result;
+        DockerfileWasGenerated = true;
     }
 
     [RelayCommand]
@@ -154,6 +162,57 @@ internal partial class DockerfileGeneratorViewModel
     {
         NuGetSources.Remove(source as NuGetSource);
         OnPropertyChanged(nameof(NuGetSources));
+    }
+
+    [RelayCommand]
+    public async Task CopyToClipboard()
+    {
+        if (GeneratedDockerfile is null)
+            return;
+
+        await Application.Current.Clipboard.SetTextAsync(GeneratedDockerfile);
+
+        // TODO: Notification
+    }
+
+    [RelayCommand]
+    public async Task SaveToProjectFolder()
+    {
+        if (GeneratedDockerfile is null)
+            return;
+
+        await File.WriteAllTextAsync(
+            Path.Combine(Path.GetDirectoryName(_selectedProjectData.AbsolutePathToProjFile), "Dockerfile"),
+            GeneratedDockerfile);
+
+        // TODO: Dialog "Overwrite existing file?"
+        // TODO: Notification
+    }
+
+    [RelayCommand]
+    public async Task SaveToChosenFolder()
+    {
+        // TODO: Fix some bug with Downloads folder
+        if (Application.Current.ApplicationLifetime is not IClassicDesktopStyleApplicationLifetime desktopLifetime)
+        {
+            return;
+        }
+
+        var result = await desktopLifetime.MainWindow.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
+        {
+            Title = "Choose folder, where Dockerfile will be saved",
+            AllowMultiple = false,
+        });
+
+        if (result[0].TryGetUri(out var pathUri))
+        {
+            await File.WriteAllTextAsync(
+            Path.Combine(pathUri.AbsolutePath, "Dockerfile"),
+            GeneratedDockerfile);
+        }
+
+        // TODO: Dialog "Overwrite existing file?"
+        // TODO: Notification
     }
 
     #endregion

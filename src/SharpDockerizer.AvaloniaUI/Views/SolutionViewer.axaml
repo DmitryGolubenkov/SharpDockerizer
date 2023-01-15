@@ -19,13 +19,8 @@
 							   DockPanel.Dock="Left">Solution Viewer</TextBlock>
 					<Button Command="{Binding RefreshSolution}"
 							DockPanel.Dock="Right"
-							Background="Transparent"
 							IsVisible="{Binding IsSolutionLoaded}"
-							Classes="Flat Light"
-							Foreground="White"
-							Padding="4"
-							Height="25"
-							Width="25"
+							Classes="Flat Light Topbar"
 							>
 							<mati:MaterialIcon Kind="Refresh" ToolTip.Tip="Refresh Solution" />
 					</Button>
