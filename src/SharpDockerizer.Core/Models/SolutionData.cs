@@ -2,6 +2,10 @@
 public class SolutionData
 {
     /// <summary>
+    /// Solution name
+    /// </summary>
+    public required string Name { get; set; }
+    /// <summary>
     /// Absolute path to solution directory.
     /// </summary>
     public required string SolutionRootDirectoryPath { get; set; }

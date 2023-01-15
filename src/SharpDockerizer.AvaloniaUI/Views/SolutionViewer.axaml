@@ -21,8 +21,9 @@
 							DockPanel.Dock="Right"
 							IsVisible="{Binding IsSolutionLoaded}"
 							Classes="Flat Light Topbar"
+							ToolTip.Tip="Refresh Solution" 
 							>
-							<mati:MaterialIcon Kind="Refresh" ToolTip.Tip="Refresh Solution" />
+							<mati:MaterialIcon Kind="Refresh"/>
 					</Button>
 				</DockPanel>
 			</Border>
@@ -34,16 +35,16 @@
 					   Margin="0,16"
 					   >Load a .NET solution to view included projects.</TextBlock>
 			<ScrollViewer DockPanel.Dock="Top"
-						  Margin="10"
+						  Margin="0,10"
 						  IsVisible="{Binding IsSolutionLoaded}"
 						  VerticalAlignment="Stretch">
 				<ListBox Items="{Binding SolutionProjects}" SelectedItem="{Binding SelectedProject}">
 					<ListBox.ItemTemplate>
 						<DataTemplate>
-							<WrapPanel>
+							<StackPanel Orientation="Horizontal">
 								<mati:MaterialIcon Kind="ApplicationBracesOutline" />
 								<TextBlock Margin="8,0,0,0" Text="{Binding Path=ProjectName}"/>
-							</WrapPanel>
+							</StackPanel>
 						</DataTemplate>
 					</ListBox.ItemTemplate>
 				</ListBox>

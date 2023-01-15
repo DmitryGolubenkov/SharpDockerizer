@@ -62,6 +62,7 @@ public partial class App : Application
         serviceCollection.AddTransient<IAspNetDockerImageVersionSelector, AspNetDockerImageVersionSelector>();
         serviceCollection.AddTransient<IDotNetSdkImageVersionSelector, DotNetSdkImageVersionSelector>();
         serviceCollection.AddTransient<IProjectDependenciesExporter, ProjectDependenciesExporter>();
+        serviceCollection.AddTransient<IRecentlyOpenedSolutionsService, RecentlyOpenedSolutionsService>();
     }
 
     private void ConfigureLogging(IServiceCollection services)

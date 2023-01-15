@@ -19,6 +19,16 @@
 					</WrapPanel>
 				</MenuItem.Header>
 				<MenuItem Command="{Binding LoadSolution}" Header="_Open Solution"/>
+				<MenuItem IsEnabled="{Binding RecentSolutionsEnabled}" Header="_Recently Opened" Items="{Binding RecentSolutions}">
+					<MenuItem.Styles>
+						<Style Selector="MenuItem">
+							<Setter Property="Header" Value="{Binding Name}"/>
+							<Setter Property="Command" Value="{Binding $parent[UserControl].DataContext.OpenRecentSolution}" />
+							<Setter Property="CommandParameter" Value="{Binding AbsolutePath}" />
+						</Style>
+					</MenuItem.Styles>
+
+				</MenuItem>
 				<Separator/>
 				<MenuItem Command="{Binding CloseApp}" Header="_Exit"/>
 			</MenuItem>

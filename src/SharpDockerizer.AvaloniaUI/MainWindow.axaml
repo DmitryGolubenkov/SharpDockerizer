@@ -6,19 +6,16 @@
         mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
         x:Class="SharpDockerizer.AvaloniaUI.MainWindow"
         Title="SharpDockerizer"
+		MinWidth="400"
+		MinHeight="250"
 	>
-	<DockPanel>	
+	<DockPanel>
 		<views:TopBar DockPanel.Dock="Top" />
-		<SplitView IsPaneOpen="true"
-				   DisplayMode="Inline"
-				   OpenPaneLength="256"
-				   DockPanel.Dock="Top"
-				   >
-			<SplitView.Pane>
-				<views:SolutionViewer/>
-			</SplitView.Pane>
 
-			<views:DockerfileGenerator />
-		</SplitView>
+		<Grid ColumnDefinitions="256,2,*" DockPanel.Dock="Top">
+			<views:SolutionViewer Grid.Column="0" MinWidth="100" />
+			<GridSplitter Width="2" Grid.Column="1" />
+			<views:DockerfileGenerator Grid.Column="2" MinWidth="100"/>
+		</Grid>
 	</DockPanel>
 </Window>

@@ -36,6 +36,7 @@ public class SolutionLoader : ISolutionLoader, ISolutionUpdater
             // Create new solution data
             _currentSolutionInfo.CurrentSolution = new SolutionData
             {
+                Name = Path.GetFileNameWithoutExtension(solutionFilePath),
                 SolutionRootDirectoryPath = Path.GetDirectoryName(solutionFilePath),
                 SolutionFilePath = solutionFilePath,
             };

@@ -9,6 +9,8 @@ using SharpDockerizer.AppLayer.Contracts;
 using CommunityToolkit.Mvvm.Messaging;
 using SharpDockerizer.AppLayer.Events;
 using SharpDockerizer.AppLayer.Utilities;
+using SharpDockerizer.AppLayer.Models;
+using System.IO;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
@@ -18,17 +20,38 @@ internal partial class TopBarViewModel
 
     private ISolutionLoader _solutionLoader;
     private readonly IMessenger _messenger;
+    private readonly IRecentlyOpenedSolutionsService _recentlyOpenedSolutionsService;
+    private readonly ICurrentSolutionInfo _currentSolutionInfo;
 
     #endregion
 
     #region Constructor
 
-    public TopBarViewModel(ISolutionLoader solutionLoader, IMessenger messenger)
+    public TopBarViewModel(ISolutionLoader solutionLoader, IMessenger messenger, IRecentlyOpenedSolutionsService recentlyOpenedSolutionsService, ICurrentSolutionInfo currentSolutionInfo)
     {
         _solutionLoader = solutionLoader;
         _messenger = messenger;
+        _recentlyOpenedSolutionsService = recentlyOpenedSolutionsService;
+        _currentSolutionInfo = currentSolutionInfo;
+        // Load recent solutions. Also check if there are no recent solutions.
+
+        var recentSolutions = recentlyOpenedSolutionsService.GetSolutions();
+        if (recentSolutions is not null && recentSolutions.Count > 0)
+        {
+            RecentSolutions = recentSolutions;
+            RecentSolutionsEnabled = true;
+        }
+
     }
 
+    #endregion
+
+    #region Observable Properties
+
+    [ObservableProperty]
+    private List<RecentlyOpenedSolution> _recentSolutions;
+    [ObservableProperty]
+    private bool _recentSolutionsEnabled;
     #endregion
 
     #region Relay Commands
@@ -59,11 +82,34 @@ internal partial class TopBarViewModel
             {
                 result[0].TryGetUri(out var uri);
                 await _solutionLoader.LoadSolution(uri.AbsolutePath);
+                await _recentlyOpenedSolutionsService.Add(new RecentlyOpenedSolution()
+                {
+                    Name =_currentSolutionInfo.CurrentSolution.Name,
+                    AbsolutePath = _currentSolutionInfo.CurrentSolution.SolutionFilePath
+                });
+
+                RecentSolutions =  _recentlyOpenedSolutionsService.GetSolutions();
+                RecentSolutionsEnabled = true;
+
                 _messenger.Send<SolutionLoadedEvent>();
             }
         }
     }
 
+    [RelayCommand]
+    internal async Task OpenRecentSolution(object path)
+    {
+        try
+        {
+            await _solutionLoader.LoadSolution(path as string);
+            _messenger.Send<SolutionLoadedEvent>();
+        }
+        catch (IOException ex)
+        {
+            // TODO: Notification
+            _recentlyOpenedSolutionsService.RemoveWithPath(path as string);
+        }
+    }
 
     [RelayCommand]
     internal void CloseApp()
