@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer.AvaloniaUI"
 			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+			 xmlns:p="clr-namespace:SharpDockerizer.AvaloniaUI.Properties"
 			 DataContext="{local:DISource Type=vms:SolutionViewerViewModel}"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SharpDockerizer.AvaloniaUI.Views.SolutionViewer"
@@ -16,12 +17,12 @@
 					<mati:MaterialIcon Kind="FileTree" DockPanel.Dock="Left" />
 					<TextBlock Margin="8"
 							   FontSize="16"
-							   DockPanel.Dock="Left">Solution Viewer</TextBlock>
+							   DockPanel.Dock="Left" Text="{x:Static p:Resources.SolutionViewerTitle}" />
 					<Button Command="{Binding RefreshSolution}"
 							DockPanel.Dock="Right"
 							IsVisible="{Binding IsSolutionLoaded}"
 							Classes="Flat Light Topbar"
-							ToolTip.Tip="Refresh Solution" 
+							ToolTip.Tip="{x:Static p:Resources.RefreshButton}" 
 							>
 							<mati:MaterialIcon Kind="Refresh"/>
 					</Button>
@@ -33,7 +34,7 @@
 					   HorizontalAlignment="Center"
 					   VerticalAlignment="Center"
 					   Margin="0,16"
-					   >Load a .NET solution to view included projects.</TextBlock>
+					   Text="{x:Static p:Resources.LoadSolutionFiller}" />
 			<ScrollViewer DockPanel.Dock="Top"
 						  Margin="0,10"
 						  IsVisible="{Binding IsSolutionLoaded}"

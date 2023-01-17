@@ -11,6 +11,7 @@ using SharpDockerizer.AppLayer.Events;
 using SharpDockerizer.AppLayer.Utilities;
 using SharpDockerizer.AppLayer.Models;
 using System.IO;
+using SharpDockerizer.AvaloniaUI.Properties;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
@@ -66,7 +67,7 @@ internal partial class TopBarViewModel
         {
             var result = await desktopLifetime.MainWindow.StorageProvider.OpenFilePickerAsync(new FilePickerOpenOptions()
             {
-                Title = "Choose .sln file",
+                Title = Resources.ChooseSlnFile,
                 AllowMultiple = false,
                 FileTypeFilter = new List<FilePickerFileType>()
                     {

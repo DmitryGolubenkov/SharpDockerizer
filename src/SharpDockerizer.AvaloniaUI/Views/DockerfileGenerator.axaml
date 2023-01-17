@@ -5,6 +5,7 @@
              xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer.AvaloniaUI"
 			 xmlns:styles="clr-namespace:Material.Styles;assembly=Material.Styles"
 			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+			 xmlns:p="clr-namespace:SharpDockerizer.AvaloniaUI.Properties"
 			 DataContext="{local:DISource Type=vms:DockerfileGeneratorViewModel}"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SharpDockerizer.AvaloniaUI.Views.DockerfileGenerator"
@@ -34,12 +35,12 @@
 				</Border>
 
 				<!-- Exposed ports part -->
-				<Expander Header="Exposed ports"
+				<Expander Header="{x:Static p:Resources.ExposedPorts}"
 						  Margin="0,0,0,8"
 						  HorizontalAlignment="Stretch"
 						  DockPanel.Dock="Top">
 					<StackPanel Orientation="Vertical">
-						<Button Command="{Binding AddExposedPort}" Margin="8">Add Port</Button>
+						<Button Command="{Binding AddExposedPort}" Margin="8" Content="{x:Static p:Resources.AddPort}" />
 						<DataGrid Items="{Binding ExposedPorts}"
 								  VerticalAlignment="Stretch"
 								  HorizontalAlignment="Stretch"
@@ -52,7 +53,7 @@
 										<DataTemplate>
 											<Button
 												Classes="Flat"
-												ToolTip.Tip="Remove Port"
+												ToolTip.Tip="{x:Static p:Resources.RemovePort}"
 												Command="{Binding DataContext.RemoveExposedPort, ElementName=ExposedPortsDataGrid}"
 												CommandParameter="{Binding}">
 												<mati:MaterialIcon Kind="Delete" Foreground="Red" />
@@ -72,7 +73,8 @@
 						  HorizontalAlignment="Stretch"
 						  DockPanel.Dock="Top">
 					<StackPanel Orientation="Vertical">
-						<Button Command="{Binding AddNuGetSource}" Margin="8">Add new NuGet source</Button>
+						<Button Command="{Binding AddNuGetSource}" Margin="8"
+								Content="{x:Static p:Resources.AddNuGetSource}" />
 						<DataGrid Items="{Binding NuGetSources}"
 								  VerticalAlignment="Stretch"
 								  HorizontalAlignment="Stretch"
@@ -86,7 +88,7 @@
 										<DataTemplate>
 											<Button
 												Classes="Flat"
-												ToolTip.Tip="Remove NuGet source"
+												ToolTip.Tip="{x:Static p:Resources.RemoveNuGetSource}"
 												Command="{Binding DataContext.RemoveNuGetSource, ElementName=NuGetSourcesDataGrid}"
 												CommandParameter="{Binding}">
 												<mati:MaterialIcon Kind="Delete" Foreground="Red" />
@@ -94,10 +96,10 @@
 										</DataTemplate>
 									</DataGridTemplateColumn.CellTemplate>
 								</DataGridTemplateColumn>
-								<DataGridTextColumn Header="Source Name" Binding="{Binding Name}" />
-								<DataGridTextColumn Header="URL" Binding="{Binding Link}" />
-								<DataGridCheckBoxColumn Header="Authentication required?" Binding="{Binding AuthenticationRequired}" />
-								<DataGridTextColumn Header="Username" Binding="{Binding Username}" />
+								<DataGridTextColumn Header="{x:Static p:Resources.SourceName}" Binding="{Binding Name}" />
+								<DataGridTextColumn Header="{x:Static p:Resources.URL}" Binding="{Binding Link}" />
+								<DataGridCheckBoxColumn Header="{x:Static p:Resources.AuthenticationRequired}" Binding="{Binding AuthenticationRequired}" />
+								<DataGridTextColumn Header="{x:Static p:Resources.Username}" Binding="{Binding Username}" />
 							</DataGrid.Columns>
 						</DataGrid>
 					</StackPanel>
@@ -108,7 +110,8 @@
 						HorizontalAlignment="Right"
 						Command="{Binding GenerateDockerfile}"
 						DockPanel.Dock="Bottom"
-						Height="35">Generate Dockerfile</Button>
+						Height="35"
+						Content="{x:Static p:Resources.GenerateDockerfileButton}" />
 			</DockPanel>
 		</ScrollViewer>
 
@@ -128,16 +131,28 @@
 					<TextBlock
 						DockPanel.Dock="Left"
 						Margin="8"
-						FontSize="16">Generated Dockerfile</TextBlock>
+						FontSize="16"
+						Text="{x:Static p:Resources.GeneratedDockerfileTitle}" />
 
-
-					<Button IsEnabled="{Binding DockerfileWasGenerated}" Classes="Flat Light Topbar" DockPanel.Dock="Right" Command="{Binding CopyToClipboard}" ToolTip.Tip="Copy to clipboard">
+					<Button IsEnabled="{Binding DockerfileWasGenerated}"
+							Classes="Flat Light Topbar"
+							DockPanel.Dock="Right"
+							Command="{Binding CopyToClipboard}"
+							ToolTip.Tip="{x:Static p:Resources.CopyToClipboard}">
 						<mati:MaterialIcon Kind="ContentCopy" />
 					</Button>
-					<Button IsEnabled="{Binding DockerfileWasGenerated}" Classes="Flat Light Topbar" DockPanel.Dock="Right" Command="{Binding SaveToChosenFolder}" ToolTip.Tip="Save to..">
+					<Button IsEnabled="{Binding DockerfileWasGenerated}"
+							Classes="Flat Light Topbar"
+							DockPanel.Dock="Right"
+							Command="{Binding SaveToChosenFolder}"
+							ToolTip.Tip="{x:Static p:Resources.SaveTo}">
 						<mati:MaterialIcon Kind="ContentSave" />
 					</Button>
-					<Button IsEnabled="{Binding DockerfileWasGenerated}" Classes="Flat Light Topbar" DockPanel.Dock="Right" Command="{Binding SaveToProjectFolder}" ToolTip.Tip="Save to project folder">
+					<Button IsEnabled="{Binding DockerfileWasGenerated}"
+							Classes="Flat Light Topbar"
+							DockPanel.Dock="Right"
+							Command="{Binding SaveToProjectFolder}"
+							ToolTip.Tip="{x:Static p:Resources.SaveToProjectFolder}">
 						<mati:MaterialIcon Kind="FileExport" />
 					</Button>
 				</DockPanel>

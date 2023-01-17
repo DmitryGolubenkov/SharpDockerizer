@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer.AvaloniaUI"
 			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+			 xmlns:p="clr-namespace:SharpDockerizer.AvaloniaUI.Properties"
 			 DataContext="{local:DISource Type=vms:TopBarViewModel}"
 			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="SharpDockerizer.AvaloniaUI.Views.TopBar"
@@ -11,15 +12,15 @@
 			 >
 	<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
 		<Menu Background="{DynamicResource MaterialDesignToolBarBackground}">
-			<MenuItem Header="_File">
+			<MenuItem>
 				<MenuItem.Header>
 					<WrapPanel Orientation="Horizontal">
 						<mati:MaterialIcon Kind="File" />
-						<Label Margin="8,0,0,0">_File</Label>
+						<Label Margin="8,0,0,0" Content="{x:Static p:Resources.FileMenu}" />
 					</WrapPanel>
 				</MenuItem.Header>
-				<MenuItem Command="{Binding LoadSolution}" Header="_Open Solution"/>
-				<MenuItem IsEnabled="{Binding RecentSolutionsEnabled}" Header="_Recently Opened" Items="{Binding RecentSolutions}">
+				<MenuItem Command="{Binding LoadSolution}" Header="{x:Static p:Resources.OpenSolution}"/>
+				<MenuItem IsEnabled="{Binding RecentSolutionsEnabled}" Header="{x:Static p:Resources.RecentlyOpened}" Items="{Binding RecentSolutions}">
 					<MenuItem.Styles>
 						<Style Selector="MenuItem">
 							<Setter Property="Header" Value="{Binding Name}"/>
@@ -30,21 +31,21 @@
 
 				</MenuItem>
 				<Separator/>
-				<MenuItem Command="{Binding CloseApp}" Header="_Exit"/>
+				<MenuItem Command="{Binding CloseApp}" Header="{x:Static p:Resources.Exit}"/>
 			</MenuItem>
 
-			<MenuItem Header="_About" Margin="8,0">
+			<MenuItem Header="{x:Static p:Resources.AboutMenu}" Margin="8,0">
 				<MenuItem.Header>
 					<WrapPanel Orientation="Horizontal">
 						<mati:MaterialIcon Kind="About" />
-						<Label Margin="4,0,0,0">_About</Label>
+						<Label Margin="4,0,0,0" Content="{x:Static p:Resources.AboutMenu}" />
 					</WrapPanel>
 				</MenuItem.Header>
-				<MenuItem Command="{Binding OpenGitHubPage}" Header="Open GitHub page">
+				<MenuItem Command="{Binding OpenGitHubPage}">
 					<MenuItem.Header>
 						<WrapPanel Orientation="Horizontal">
 							<mati:MaterialIcon Kind="Github" />
-							<Label Margin="4,0,0,0">Open GitHub page</Label>
+							<Label Margin="4,0,0,0" Content="{x:Static p:Resources.GitHubButton}" />
 						</WrapPanel>
 					</MenuItem.Header>
 				</MenuItem>

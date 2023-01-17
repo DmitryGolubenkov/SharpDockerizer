@@ -124,7 +124,7 @@ internal partial class SolutionViewerViewModel
     [RelayCommand]
     public async Task RefreshSolution()
     {
-        if (_isSolutionLoaded && await _solutionUpdater.RefreshSolution())
+        if (IsSolutionLoaded && await _solutionUpdater.RefreshSolution())
         {
             _messenger.Send<SolutionRefreshedEvent>();
         }

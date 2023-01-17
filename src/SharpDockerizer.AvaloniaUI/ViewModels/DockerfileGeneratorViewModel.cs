@@ -14,6 +14,7 @@ using Avalonia;
 using System.IO;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
+using SharpDockerizer.AvaloniaUI.Properties;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 [INotifyPropertyChanged]
@@ -200,7 +201,7 @@ internal partial class DockerfileGeneratorViewModel
 
         var result = await desktopLifetime.MainWindow.StorageProvider.OpenFolderPickerAsync(new FolderPickerOpenOptions()
         {
-            Title = "Choose folder, where Dockerfile will be saved",
+            Title = Resources.ChooseSaveFolder,
             AllowMultiple = false,
         });
 
