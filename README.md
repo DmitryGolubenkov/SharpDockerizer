@@ -6,24 +6,28 @@ SharpDockerizer can automatically build a Dockerfile for your ASP.NET projects u
 ![SharpDockerizer Main UI Screenshot](https://github.com/DmitryGolubenkov/SharpDockerizer/blob/master/img/main-ui.jpg)
 
 ## Features
-- Crossplatform (Windows, Linux, MacOS);
 - Load .NET solution and parse included projects;
+- Crossplatform (Windows, Linux, MacOS);
 - Auto-parse project references;
 - Generate Dockerfiles for .NET projects;
 - Add NuGet repos that are required to build the project (No authorization / basic auth with password passed as docker build argument)
+- Detect `NuGet.config`
+- Localization support
 
 ## Installation
-This application is still under development, so no builds are avaliable. You will have to build it from source.
+### Binaries
+You can download SharpDockerizer from GitHub: [Releases](https://github.com/DmitryGolubenkov/SharpDockerizer/releases). 
 
-### Requirements:
+### Build from source
+#### Requirements:
 - Git
 - .NET 7 SDK
 - .NET 7 runtime
-### Steps
+#### Steps
 1. Clone the repository.
 2. Open terminal in `src/SharpDockerizer.AvaloniaUI`.
-3. Use `dotnet publish --configuration Release` to build the application.
-4. Launch application. Built application will be avaliable in `src/SharpDockerizer.AvaloniaUI/bin/Release/net7.0/publish` folder, executable is named `SharpDockerizer.AvaloniaUI.exe`.
+3. Use `dotnet publish --configuration Release` to build the application. Built application will be avaliable in `src/SharpDockerizer.AvaloniaUI/bin/Release/net7.0/publish` folder, executable is named `SharpDockerizer.exe`.
+4. Launch application. 
 
 From here you can rename `publish` folder and copy it to preferred location.
 
