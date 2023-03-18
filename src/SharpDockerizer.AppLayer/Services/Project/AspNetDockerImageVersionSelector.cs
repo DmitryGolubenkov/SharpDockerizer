@@ -5,7 +5,7 @@ public class AspNetDockerImageVersionSelector : IAspNetDockerImageVersionSelecto
 {
     // TODO: temporary implementation for generic purposes. Maybe provide some way to choose exact
     // version in GUI? Make GET requests to docker hub API to find avaliable images?  
-    public string GetLinkToImageForVersion(string version) => version.Trim() switch
+    public string GetLinkToImageForVersion(string version) => version is not null ? version.Trim() switch
     {
         "netcoreapp3.1" => "mcr.microsoft.com/dotnet/aspnet:3.1",
         "net5.0" => "mcr.microsoft.com/dotnet/aspnet:5.0",
@@ -14,6 +14,6 @@ public class AspNetDockerImageVersionSelector : IAspNetDockerImageVersionSelecto
         "net8.0" => "mcr.microsoft.com/dotnet/aspnet:8.0",
         "net9.0" => "mcr.microsoft.com/dotnet/aspnet:9.0",
         _ => "mcr.microsoft.com/dotnet/aspnet"
-    };
+    } : "mcr.microsoft.com/dotnet/aspnet";
 
 }

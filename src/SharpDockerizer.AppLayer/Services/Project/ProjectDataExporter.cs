@@ -23,7 +23,10 @@ public class ProjectDataExporter : IProjectDataExporter
             XDocument xml = await XDocument.LoadAsync(fileStream, LoadOptions.None, cancellationToken);
 
             var projectName = Path.GetFileNameWithoutExtension(path);
-            var version = xml.Element("Project").Element("PropertyGroup").Element("TargetFramework").Value;
+
+            var targetFramework = xml.Root.Descendants().Where(element => element.Name == "TargetFramework" || element.Name == "TargetFrameworks").FirstOrDefault();
+
+            var version = targetFramework is not null ? ParseDotNetVersion(targetFramework.Value) : null;
 
             var projectData = new ProjectData()
             {
@@ -38,5 +41,20 @@ public class ProjectDataExporter : IProjectDataExporter
             return projectData;
         }
 
+    }
+
+    /// <summary>
+    /// Parses string that contains dotnet versions and returns one of them, or null, if passes data is null.
+    /// </summary>
+    private string? ParseDotNetVersion(string value)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            return null;
+
+        var values = value.Split(';');
+        if (values.Length == 1)
+            return values[0].Trim();
+
+        return values.Last();
     }
 }
