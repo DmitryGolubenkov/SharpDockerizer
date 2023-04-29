@@ -9,8 +9,8 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
-[INotifyPropertyChanged]
-internal partial class SolutionViewerViewModel
+
+public partial class SolutionViewerViewModel : ObservableObject
 {
     #region Fields
 

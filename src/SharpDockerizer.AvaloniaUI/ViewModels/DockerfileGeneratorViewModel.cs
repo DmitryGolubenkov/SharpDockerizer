@@ -17,8 +17,8 @@ using Avalonia.Platform.Storage;
 using SharpDockerizer.AvaloniaUI.Properties;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
-[INotifyPropertyChanged]
-internal partial class DockerfileGeneratorViewModel
+
+internal partial class DockerfileGeneratorViewModel : ObservableObject
 {
     #region Properties
 
@@ -205,13 +205,17 @@ internal partial class DockerfileGeneratorViewModel
             AllowMultiple = false,
         });
 
-        if (result[0].TryGetUri(out var pathUri))
+
+        // await File.WriteAllTextAsync(
+        // Path.Combine(result[0].Path.AbsolutePath, "Dockerfile"),
+        // GeneratedDockerfile);
+        var pathUri = result[0].Path;
+        if (pathUri is not null)
         {
             await File.WriteAllTextAsync(
             Path.Combine(pathUri.AbsolutePath, "Dockerfile"),
             GeneratedDockerfile);
         }
-
         // TODO: Dialog "Overwrite existing file?"
         // TODO: Notification
     }

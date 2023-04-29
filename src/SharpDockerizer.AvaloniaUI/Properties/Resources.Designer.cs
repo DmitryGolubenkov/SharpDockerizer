@@ -268,6 +268,15 @@ namespace SharpDockerizer.AvaloniaUI.Properties {
         }
         
         /// <summary>
+        ///   Ищет локализованную строку, похожую на Settings.
+        /// </summary>
+        public static string Settings {
+            get {
+                return ResourceManager.GetString("Settings", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Ищет локализованную строку, похожую на Solution Viewer.
         /// </summary>
         public static string SolutionViewerTitle {
@@ -282,6 +291,15 @@ namespace SharpDockerizer.AvaloniaUI.Properties {
         public static string SourceName {
             get {
                 return ResourceManager.GetString("SourceName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Ищет локализованную строку, похожую на Tools.
+        /// </summary>
+        public static string Tools {
+            get {
+                return ResourceManager.GetString("Tools", resourceCulture);
             }
         }
         

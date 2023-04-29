@@ -186,11 +186,17 @@
   <data name="SaveToProjectFolder" xml:space="preserve">
     <value>Save To Project Folder</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Settings</value>
+  </data>
   <data name="SolutionViewerTitle" xml:space="preserve">
     <value>Solution Viewer</value>
   </data>
   <data name="SourceName" xml:space="preserve">
     <value>Source Name</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Tools</value>
   </data>
   <data name="URL" xml:space="preserve">
     <value>URL</value>

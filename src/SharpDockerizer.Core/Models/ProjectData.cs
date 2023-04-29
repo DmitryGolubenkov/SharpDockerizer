@@ -12,7 +12,7 @@ public class ProjectData
     /// <summary>
     /// .NET version extracted from .*proj
     /// </summary>
-    public required string DotNetVersion { get; set; }
+    public required string? DotNetVersion { get; set; }
 
     /// <summary>
     /// Relative path from solution folder to project folder (including project file)

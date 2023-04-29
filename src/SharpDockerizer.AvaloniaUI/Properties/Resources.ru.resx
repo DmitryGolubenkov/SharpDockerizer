@@ -186,11 +186,17 @@
   <data name="SaveToProjectFolder" xml:space="preserve">
     <value>Сохранить в папку проекта</value>
   </data>
+  <data name="Settings" xml:space="preserve">
+    <value>Настройки</value>
+  </data>
   <data name="SolutionViewerTitle" xml:space="preserve">
     <value>Обозреватель решения</value>
   </data>
   <data name="SourceName" xml:space="preserve">
     <value>Название источника</value>
+  </data>
+  <data name="Tools" xml:space="preserve">
+    <value>Инструменты</value>
   </data>
   <data name="URL" xml:space="preserve">
     <value>URL</value>

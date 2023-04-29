@@ -6,15 +6,14 @@ using SharpDockerizer.AppLayer.Contracts;
 using SharpDockerizer.AppLayer.Generation;
 using SharpDockerizer.AppLayer.Services.Project;
 using SharpDockerizer.AppLayer.Services.Solution;
-using SharpDockerizer.AvaloniaUI.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System;
+using Autofac;
+using SharpDockerizer.AvaloniaUI.Services;
+using SharpDockerizer.AvaloniaUI.Services.Localization;
+
 namespace SharpDockerizer.AvaloniaUI;
 public partial class App : Application
 {
-    private IServiceProvider _services;
-
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
@@ -22,57 +21,62 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        IServiceCollection serviceCollection = new ServiceCollection();
-        ConfigureServices(serviceCollection);
+        var builder = new ContainerBuilder();
 
-        _services = serviceCollection.BuildServiceProvider();
+        ConfigureServices(builder);
+        var services = builder.Build();
 
         // Used in DI and MVVM
-        DISource.Resolver = _services.GetService;
+        DISource.Resolver = services.Resolve;
 
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow();
         }
+
         Log.Information("Application started");
 
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void ConfigureServices(IServiceCollection serviceCollection)
+    private void ConfigureServices(ContainerBuilder builder)
     {
-        // ViewModels
-        /*foreach (var viewModelType in GetType().Assembly.GetTypes().Where(type => type.Namespace == "SharpDockerizer.AvaloniaUI.ViewModels"))
-        {
-            //serviceCollection.AddTransient<viewModelType>();
-        }*/
-        ConfigureLogging(serviceCollection);
+        // Logging
+        ConfigureLogging(builder);
 
-        serviceCollection.AddTransient<DockerfileGeneratorViewModel>();
-        serviceCollection.AddTransient<MainWindowViewModel>();
-        serviceCollection.AddTransient<SolutionViewerViewModel>();
-        serviceCollection.AddTransient<TopBarViewModel>();
+        //Register all view models
+        builder.RegisterAssemblyTypes(typeof(App).Assembly)
+            .Where(t => t.Name.EndsWith("ViewModel"))
+            .AsSelf()
+            .AsImplementedInterfaces();
 
-        serviceCollection.AddSingleton<IMessenger, StrongReferenceMessenger>();
-        serviceCollection.AddSingleton<ICurrentSolutionInfo, CurrentSolutionInfo>();
-        serviceCollection.AddTransient<ISolutionLoader, SolutionLoader>();
-        serviceCollection.AddTransient<ISolutionUpdater, SolutionLoader>();
-        serviceCollection.AddTransient<IProjectDataExporter, ProjectDataExporter>();
-        serviceCollection.AddTransient<IDockerfileGenerator, DockerfileGenerator>();
-        serviceCollection.AddTransient<IAspNetDockerImageVersionSelector, AspNetDockerImageVersionSelector>();
-        serviceCollection.AddTransient<IDotNetSdkImageVersionSelector, DotNetSdkImageVersionSelector>();
-        serviceCollection.AddTransient<IProjectDependenciesExporter, ProjectDependenciesExporter>();
-        serviceCollection.AddTransient<IRecentlyOpenedSolutionsService, RecentlyOpenedSolutionsService>();
+        // UI Services
+        builder.RegisterType<StrongReferenceMessenger>().As<IMessenger>().SingleInstance();
+        builder.RegisterType<AppNavigator>().AsSelf().SingleInstance();
+
+        builder.RegisterType<OptionsService>().AsSelf().SingleInstance();
+        builder.RegisterType<LocalizationController>().AsSelf().SingleInstance();
+
+        // Register other services required for application to function
+        builder.RegisterType<CurrentSolutionInfo>().As<ICurrentSolutionInfo>().SingleInstance();
+        builder.RegisterType<SolutionLoader>().AsImplementedInterfaces();
+        builder.RegisterType<ProjectDataExporter>().As<IProjectDataExporter>();
+        builder.RegisterType<StandartDockerfileGenerator>().As<IDockerfileGenerator>();
+        builder.RegisterType<AspNetDockerImageVersionSelector>().As<IAspNetDockerImageVersionSelector>();
+        builder.RegisterType<DotNetSdkImageVersionSelector>().As<IDotNetSdkImageVersionSelector>();
+        builder.RegisterType<ProjectDependenciesExporter>().As<IProjectDependenciesExporter>();
+        builder.RegisterType<RecentlyOpenedSolutionsService>().As<IRecentlyOpenedSolutionsService>();
+        builder.RegisterType<NuGetConfigExtractor>().As<INuGetConfigExtractor>();
     }
 
-    private void ConfigureLogging(IServiceCollection services)
+   // private void ConfigureLogging(IServiceCollection services)
+    private void ConfigureLogging(ContainerBuilder builder)
     {
         var loggerConfiguration = new LoggerConfiguration()
            .WriteTo.File("logs/app.log", rollingInterval: RollingInterval.Day, fileSizeLimitBytes: 3145728);
 
         ILogger log = loggerConfiguration.CreateLogger();
         Log.Logger = log;
-        services.AddSingleton(log);
+        builder.RegisterInstance<ILogger>(log).SingleInstance();
     }
-
 }

@@ -34,6 +34,24 @@
 				<MenuItem Command="{Binding CloseApp}" Header="{x:Static p:Resources.Exit}"/>
 			</MenuItem>
 
+			<MenuItem Header="{x:Static p:Resources.Tools}" Margin="8,0">
+				<MenuItem.Header>
+					<WrapPanel Orientation="Horizontal">
+						<mati:MaterialIcon Kind="Tools" />
+						<Label Margin="4,0,0,0" Content="{x:Static p:Resources.Tools}" />
+					</WrapPanel>
+				</MenuItem.Header>
+
+				<MenuItem Command="{Binding OpenSettings}">
+					<MenuItem.Header>
+						<WrapPanel Orientation="Horizontal">
+							<mati:MaterialIcon Kind="Settings" />
+							<Label Margin="4,0,0,0" Content="{x:Static p:Resources.Settings}" />
+						</WrapPanel>
+					</MenuItem.Header>
+				</MenuItem>
+			</MenuItem>
+
 			<MenuItem Header="{x:Static p:Resources.AboutMenu}" Margin="8,0">
 				<MenuItem.Header>
 					<WrapPanel Orientation="Horizontal">
