@@ -204,4 +204,13 @@
   <data name="Username" xml:space="preserve">
     <value>Username</value>
   </data>
+  <data name="LanguageLabel" xml:space="preserve">
+    <value>Language</value>
+  </data>
+  <data name="RestartAppButton" xml:space="preserve">
+    <value>Restart App</value>
+  </data>
+  <data name="RestartRequiredWarningText" xml:space="preserve">
+    <value>Requires app restart to fully take effect.</value>
+  </data>
 </root>

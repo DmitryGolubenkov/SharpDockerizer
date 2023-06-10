@@ -8,7 +8,7 @@
    mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
    xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
    x:Class="SharpDockerizer.AvaloniaUI.Views.MainApplicationView">
-	<Grid ColumnDefinitions="256,2,*" DockPanel.Dock="Top">
+	<Grid ColumnDefinitions="320,2,*" DockPanel.Dock="Top">
 		<views:SolutionViewer Grid.Column="0" MinWidth="100" />
 		<GridSplitter Width="2" Grid.Column="1" />
 		<views:DockerfileGenerator Grid.Column="2" MinWidth="100"/>

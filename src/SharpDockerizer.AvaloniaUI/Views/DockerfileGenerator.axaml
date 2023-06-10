@@ -41,7 +41,7 @@
 						  DockPanel.Dock="Top">
 					<StackPanel Orientation="Vertical">
 						<Button Command="{Binding AddExposedPort}" Margin="8" Content="{x:Static p:Resources.AddPort}" />
-						<DataGrid Items="{Binding ExposedPorts}"
+						<DataGrid ItemsSource="{Binding ExposedPorts}"
 								  VerticalAlignment="Stretch"
 								  HorizontalAlignment="Stretch"
 								  Height="320"
@@ -75,7 +75,7 @@
 					<StackPanel Orientation="Vertical">
 						<Button Command="{Binding AddNuGetSource}" Margin="8"
 								Content="{x:Static p:Resources.AddNuGetSource}" />
-						<DataGrid Items="{Binding NuGetSources}"
+						<DataGrid ItemsSource="{Binding NuGetSources}"
 								  VerticalAlignment="Stretch"
 								  HorizontalAlignment="Stretch"
 								  Height="320"

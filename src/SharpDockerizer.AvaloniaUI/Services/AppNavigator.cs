@@ -2,6 +2,8 @@
 using SharpDockerizer.AvaloniaUI.ViewModels;
 using System;
 using System.Collections.Generic;
+using CommunityToolkit.Mvvm.Messaging;
+using SharpDockerizer.AppLayer.Events;
 
 namespace SharpDockerizer.AvaloniaUI.Services;
 
@@ -10,13 +12,21 @@ namespace SharpDockerizer.AvaloniaUI.Services;
 /// </summary>
 public class AppNavigator
 {
-
     #region Constructor
 
-    public AppNavigator()
+    public AppNavigator(IMessenger messenger)
     {
+        _messenger = messenger;
         _currentViewModelType = typeof(MainApplicationViewViewModel);
         onNavigateTo?.Invoke(typeof(MainApplicationViewViewModel));
+
+        // On app restart we need to reset AppNavigator state to default
+        _messenger.Register<NeedAppRestartEvent>(this, (sender, message) =>
+        {
+            _currentViewModelType = typeof(MainApplicationViewViewModel);
+            _history.Clear();
+            _history.Push(typeof(MainApplicationViewViewModel));
+        });
     }
 
     #endregion
@@ -24,10 +34,12 @@ public class AppNavigator
     #region Fields
 
     public delegate void OnNavigateTo(Type type);
+
     public event OnNavigateTo? onNavigateTo;
 
     private readonly Stack<Type> _history = new Stack<Type>();
     private Type _currentViewModelType;
+    private readonly IMessenger _messenger;
 
     #endregion
 
@@ -51,8 +63,8 @@ public class AppNavigator
     {
         if (_history.Count == 0)
             return;
-        
-        
+
+
         var targetViewModelType = _history.Pop();
         onNavigateTo?.Invoke(targetViewModelType);
         _currentViewModelType = targetViewModelType;

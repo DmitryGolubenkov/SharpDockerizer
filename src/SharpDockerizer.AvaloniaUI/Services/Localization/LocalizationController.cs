@@ -1,10 +1,12 @@
 ﻿using System.Globalization;
 using System.Threading;
+using CommunityToolkit.Mvvm.Messaging;
 
 namespace SharpDockerizer.AvaloniaUI.Services.Localization;
 public class LocalizationController
 {
     private readonly OptionsService _optionsService;
+    private readonly IMessenger _messenger;
 
     public LocalizationController(OptionsService optionsService)
     {
@@ -24,6 +26,11 @@ public class LocalizationController
     public void SetLocale(ApplicationLocale locale)
     {
         CultureInfo ci = new CultureInfo(locale.CultureString);
+        if (ci.Name == Thread.CurrentThread.CurrentCulture.Name)
+        {
+            return;
+        }
+        
         Thread.CurrentThread.CurrentCulture = ci;
         Thread.CurrentThread.CurrentUICulture = ci;
         _optionsService.ApplicationOptions.Locale = locale;

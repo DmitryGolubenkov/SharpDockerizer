@@ -1,4 +1,5 @@
-﻿using Avalonia;
+﻿using System;
+using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using CommunityToolkit.Mvvm.ComponentModel;
@@ -20,7 +21,7 @@ internal partial class TopBarViewModel : ObservableObject
 {
     #region Fields
 
-    private ISolutionLoader _solutionLoader;
+    private readonly ISolutionLoader _solutionLoader;
     private readonly IMessenger _messenger;
     private readonly IRecentlyOpenedSolutionsService _recentlyOpenedSolutionsService;
     private readonly ICurrentSolutionInfo _currentSolutionInfo;
@@ -45,7 +46,6 @@ internal partial class TopBarViewModel : ObservableObject
             RecentSolutions = recentSolutions;
             RecentSolutionsEnabled = true;
         }
-
     }
 
     #endregion
@@ -138,4 +138,5 @@ internal partial class TopBarViewModel : ObservableObject
     }
 
     #endregion
+    
 }

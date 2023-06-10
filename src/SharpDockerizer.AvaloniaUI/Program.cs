@@ -1,6 +1,9 @@
 using Avalonia;
 using Serilog;
 using System;
+using System.Threading;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
 
 namespace SharpDockerizer.AvaloniaUI;
 internal class Program
@@ -14,15 +17,13 @@ internal class Program
         try
         {
             BuildAvaloniaApp()
-            .StartWithClassicDesktopLifetime(args);
+            .Start(AppMain, args);
         }
         catch (Exception ex)
         {
             Log.Fatal(ex, "Unhandled exception occured!");
-        }
-        finally
-        {
             Log.CloseAndFlush();
+            throw;
         }
     }
 
@@ -31,4 +32,14 @@ internal class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace();
+    
+    // Application entry point. Avalonia is completely initialized.
+    static void AppMain(Application app, string[] args)
+    {
+        var cts = new CancellationTokenSource();
+
+
+        app.Run(cts.Token);
+    }
 }
+        

@@ -1,6 +1,5 @@
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-			 xmlns:fluent="using:Avalonia.Themes.Fluent"
              x:Class="SharpDockerizer.AvaloniaUI.App"
 			 xmlns:themes="clr-namespace:Material.Styles.Themes;assembly=Material.Styles"
 			 >

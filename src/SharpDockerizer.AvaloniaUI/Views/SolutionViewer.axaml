@@ -3,53 +3,52 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:vms="clr-namespace:SharpDockerizer.AvaloniaUI.ViewModels;assembly=SharpDockerizer"
-			 xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
-			 xmlns:p="clr-namespace:SharpDockerizer.AvaloniaUI.Properties"
-			 DataContext="{local:DISource Type=vms:SolutionViewerViewModel}"
-			 mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             xmlns:local="clr-namespace:SharpDockerizer.AvaloniaUI"
+             xmlns:p="clr-namespace:SharpDockerizer.AvaloniaUI.Properties"
+             DataContext="{local:DISource Type=vms:SolutionViewerViewModel}"
+             mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="650"
              x:Class="SharpDockerizer.AvaloniaUI.Views.SolutionViewer"
-			 xmlns:mati="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia"
-			 >
-	<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
-		<DockPanel Margin="10" VerticalAlignment="Stretch">
-			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}" BorderThickness="0,0,0,1">
-				<DockPanel LastChildFill="False">
-					<mati:MaterialIcon Kind="FileTree" DockPanel.Dock="Left" />
-					<TextBlock Margin="8"
-							   FontSize="16"
-							   DockPanel.Dock="Left" Text="{x:Static p:Resources.SolutionViewerTitle}" />
-					<Button Command="{Binding RefreshSolution}"
-							DockPanel.Dock="Right"
-							IsVisible="{Binding IsSolutionLoaded}"
-							Classes="Flat Light Topbar"
-							ToolTip.Tip="{x:Static p:Resources.RefreshButton}" 
-							>
-							<mati:MaterialIcon Kind="Refresh"/>
-					</Button>
-				</DockPanel>
-			</Border>
-			<TextBlock DockPanel.Dock="Top"
-					   TextWrapping="Wrap"
-					   IsVisible="{Binding !IsSolutionLoaded}"
-					   HorizontalAlignment="Center"
-					   VerticalAlignment="Center"
-					   Margin="0,16"
-					   Text="{x:Static p:Resources.LoadSolutionFiller}" />
-			<ScrollViewer DockPanel.Dock="Top"
-						  Margin="0,10"
-						  IsVisible="{Binding IsSolutionLoaded}"
-						  VerticalAlignment="Stretch">
-				<ListBox Items="{Binding SolutionProjects}" SelectedItem="{Binding SelectedProject}">
-					<ListBox.ItemTemplate>
-						<DataTemplate>
-							<StackPanel Orientation="Horizontal">
-								<mati:MaterialIcon Kind="ApplicationBracesOutline" />
-								<TextBlock Margin="8,0,0,0" Text="{Binding Path=ProjectName}"/>
-							</StackPanel>
-						</DataTemplate>
-					</ListBox.ItemTemplate>
-				</ListBox>
-			</ScrollViewer>
-		</DockPanel>
-	</Border>
+             xmlns:mati="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+    <Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
+        <DockPanel Margin="10" VerticalAlignment="Stretch">
+            <Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}"
+                    BorderThickness="0,0,0,1">
+                <DockPanel LastChildFill="False">
+                    <mati:MaterialIcon Kind="FileTree" DockPanel.Dock="Left" />
+                    <TextBlock Margin="8"
+                               FontSize="16"
+                               DockPanel.Dock="Left" Text="{x:Static p:Resources.SolutionViewerTitle}" />
+                    <Button Command="{Binding RefreshSolution}"
+                            DockPanel.Dock="Right"
+                            IsVisible="{Binding IsSolutionLoaded}"
+                            Classes="Flat Light Topbar"
+                            ToolTip.Tip="{x:Static p:Resources.RefreshButton}">
+                        <mati:MaterialIcon Kind="Refresh" />
+                    </Button>
+                </DockPanel>
+            </Border>
+            <TextBlock DockPanel.Dock="Top"
+                       TextWrapping="Wrap"
+                       IsVisible="{Binding !IsSolutionLoaded}"
+                       HorizontalAlignment="Center"
+                       VerticalAlignment="Center"
+                       Margin="0,16"
+                       Text="{x:Static p:Resources.LoadSolutionFiller}" />
+            <ListBox
+                DockPanel.Dock="Top"
+                Margin="0,10"
+                IsVisible="{Binding IsSolutionLoaded}"
+                VerticalAlignment="Stretch"
+                ItemsSource="{Binding SolutionProjects}" SelectedItem="{Binding SelectedProject}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <StackPanel Orientation="Horizontal">
+                            <mati:MaterialIcon Kind="ApplicationBracesOutline" />
+                            <TextBlock Margin="8,0,0,0" Text="{Binding Path=ProjectName}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+        </DockPanel>
+    </Border>
 </UserControl>

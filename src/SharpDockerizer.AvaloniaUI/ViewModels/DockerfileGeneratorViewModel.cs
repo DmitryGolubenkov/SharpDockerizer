@@ -15,6 +15,7 @@ using System.IO;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using SharpDockerizer.AvaloniaUI.Properties;
+using SharpDockerizer.AvaloniaUI.Services;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
 
@@ -46,6 +47,7 @@ internal partial class DockerfileGeneratorViewModel : ObservableObject
     private readonly IMessenger _messenger;
     private readonly ISolutionUpdater _solutionUpdater;
     private readonly ICurrentSolutionInfo _currentSolutionInfo;
+    private readonly IClipboardService _clipboardService;
     private ProjectData? _selectedProjectData;
 
     #endregion
@@ -55,13 +57,14 @@ internal partial class DockerfileGeneratorViewModel : ObservableObject
     public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator,
         IMessenger messenger,
         ISolutionUpdater solutionUpdater,
-        ICurrentSolutionInfo currentSolutionInfo)
+        ICurrentSolutionInfo currentSolutionInfo,
+        IClipboardService clipboardService)
     {
         _dockerfileGenerator = dockerfileGenerator;
         _messenger = messenger;
         _solutionUpdater = solutionUpdater;
         _currentSolutionInfo = currentSolutionInfo;
-
+        _clipboardService = clipboardService;
         _messenger.Register<ProjectSelectedEvent>(this, OnProjectSelectedHandler);
     }
 
@@ -171,8 +174,7 @@ internal partial class DockerfileGeneratorViewModel : ObservableObject
         if (GeneratedDockerfile is null)
             return;
 
-        await Application.Current.Clipboard.SetTextAsync(GeneratedDockerfile);
-
+        await _clipboardService.SetTextAsync(GeneratedDockerfile);
         // TODO: Notification
     }
 
