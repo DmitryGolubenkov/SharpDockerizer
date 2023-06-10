@@ -4,6 +4,7 @@ using CommunityToolkit.Mvvm.Messaging;
 using SharpDockerizer.AppLayer.Contracts;
 using SharpDockerizer.AppLayer.Events;
 using SharpDockerizer.Core.Models;
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Threading.Tasks;
@@ -57,7 +58,37 @@ public partial class SolutionViewerViewModel : ObservableObject
     /// <summary>
     /// Projects in .NET solution
     /// </summary>
-    public ObservableCollection<ProjectData> SolutionProjects { get; set; } = new ObservableCollection<ProjectData>();
+    private ObservableCollection<ProjectData> SolutionProjects { get; set; } = new ObservableCollection<ProjectData>();
+
+    /// <summary>
+    /// Projects in .NET solution
+    /// </summary>
+    public ObservableCollection<ProjectData> DisplayedSolutionProjects { get; set; } = new ObservableCollection<ProjectData>();
+
+
+    /// <summary>
+    /// Show all projects or only ASP.NET 
+    /// </summary>
+    [ObservableProperty]
+    [NotifyPropertyChangedFor(nameof(DisplayedSolutionProjects))]
+    private bool _showAllProjects = false;
+
+    partial void OnShowAllProjectsChanged(bool value)
+    {
+        ApplyConditionsToDisplayedProjects();
+    }
+
+    /// <summary>
+    /// Search entry. Used to filter projects.
+    /// </summary>
+    [ObservableProperty]
+
+    private string _searchString = string.Empty;
+
+    partial void OnSearchStringChanged(string? oldValue, string newValue)
+    {
+        ApplyConditionsToDisplayedProjects();
+    }
 
     #endregion
 
@@ -76,6 +107,8 @@ public partial class SolutionViewerViewModel : ObservableObject
                 SolutionProjects.Add(project);
             }
             IsSolutionLoaded = true;
+
+            ApplyConditionsToDisplayedProjects();
         }
         else
         {
@@ -115,6 +148,8 @@ public partial class SolutionViewerViewModel : ObservableObject
                 i--;
             }
         }
+
+        ApplyConditionsToDisplayedProjects();
     }
 
     #endregion
@@ -131,4 +166,61 @@ public partial class SolutionViewerViewModel : ObservableObject
     }
 
     #endregion
+
+    /// <summary>
+    /// Prepares a list of projects to be displayed in UI.
+    /// </summary>
+    /// <exception cref="NotImplementedException"></exception>
+    private void ApplyConditionsToDisplayedProjects()
+    {
+        // Create query
+        var displayedQuery = SolutionProjects.AsQueryable();
+        if (!string.IsNullOrWhiteSpace(SearchString))
+        {
+            displayedQuery = displayedQuery.Where(x => x.ProjectName.Contains(SearchString, StringComparison.OrdinalIgnoreCase));
+        }
+        if (!ShowAllProjects) 
+        {
+            displayedQuery = displayedQuery.Where(x => x.IsAspNetProject);
+        }
+        else
+        {
+            displayedQuery = displayedQuery.OrderByDescending(x => x.IsAspNetProject);
+        }
+
+        // Apply query and get data
+        var result = displayedQuery.ToList();
+
+        // Update displayed list
+        foreach (ProjectData newProjectData in result)
+        {
+            // Check if such project already exists
+            var existingData = DisplayedSolutionProjects.Where(x => x.ProjectName == newProjectData.ProjectName).FirstOrDefault();
+            if (existingData is not null)
+            {
+                // Update existing reference.
+                // By doing that, we don't break selected project reference.
+                existingData.UpdateWithData(newProjectData);
+            }
+            else
+            {
+                // This is a new project, so add it to solution data.
+                DisplayedSolutionProjects.Add(newProjectData);
+            }
+        }
+
+        // Remove deleted projects
+        for (int i = 0; i < DisplayedSolutionProjects.Count; i++)
+        {
+            ProjectData? existingData = DisplayedSolutionProjects[i];
+            if (!result.Where(newProj => newProj.ProjectName == existingData.ProjectName).Any())
+            {
+                DisplayedSolutionProjects.RemoveAt(i);
+                i--;
+            }
+        }
+
+
+        OnPropertyChanged(nameof(DisplayedSolutionProjects));
+    }
 }

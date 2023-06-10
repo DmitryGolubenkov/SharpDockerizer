@@ -213,4 +213,10 @@
   <data name="RestartRequiredWarningText" xml:space="preserve">
     <value>Для применения изменений требуется перезагрузка.</value>
   </data>
+  <data name="SearchSolutionText" xml:space="preserve">
+    <value>Поиск</value>
+  </data>
+  <data name="ShowAllProjectsLabel" xml:space="preserve">
+    <value>Показать все проекты</value>
+  </data>
 </root>

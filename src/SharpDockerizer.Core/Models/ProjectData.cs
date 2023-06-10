@@ -20,18 +20,24 @@ public class ProjectData
     public required string RelativePath { get; set; }
 
     /// <summary>
+    /// If ASP.NET SDK usage is detected in project - this property will be <see langword="true"/>;
+    /// </summary>
+    public required bool IsAspNetProject { get; set; }
+
+    /// <summary>
     /// Checks if all properties of ProjectData are equal.
     /// </summary>
     public override bool Equals(object? obj)
     {
         if (obj is ProjectData projectData)
         {
-            return ProjectName == projectData.ProjectName 
-                && AbsolutePathToProjFile== projectData.AbsolutePathToProjFile
+            return ProjectName == projectData.ProjectName
+                && AbsolutePathToProjFile == projectData.AbsolutePathToProjFile
                 && DotNetVersion == projectData.DotNetVersion
-                && RelativePath == projectData.RelativePath;
+                && RelativePath == projectData.RelativePath
+                && IsAspNetProject == projectData.IsAspNetProject;
         }
-        
+
         return false;
     }
 
@@ -44,6 +50,7 @@ public class ProjectData
         ProjectName = projectData.ProjectName;
         AbsolutePathToProjFile = projectData.AbsolutePathToProjFile;
         RelativePath = projectData.RelativePath;
-        DotNetVersion= projectData.DotNetVersion;
+        DotNetVersion = projectData.DotNetVersion;
+        IsAspNetProject = projectData.IsAspNetProject;
     }
 }

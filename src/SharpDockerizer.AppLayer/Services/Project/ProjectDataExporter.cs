@@ -24,7 +24,7 @@ public class ProjectDataExporter : IProjectDataExporter
 
             var projectName = Path.GetFileNameWithoutExtension(path);
 
-
+            var isAspNetProject = xml.Root.Attribute("Sdk")?.Value == "Microsoft.NET.Sdk.Web";
             var targetFramework = xml.Root.Descendants().Where(element => element.Name == "TargetFramework" || element.Name == "TargetFrameworks").FirstOrDefault();
             var version = targetFramework is not null ? ParseDotNetVersion(targetFramework.Value) : null;
 
@@ -33,7 +33,8 @@ public class ProjectDataExporter : IProjectDataExporter
                 ProjectName = projectName,
                 DotNetVersion = version,
                 AbsolutePathToProjFile = path,
-                RelativePath = relativePath
+                RelativePath = relativePath,
+                IsAspNetProject = isAspNetProject
             };
 
             Log.Information($"Project data: {projectData}");

@@ -213,4 +213,10 @@
   <data name="RestartRequiredWarningText" xml:space="preserve">
     <value>Requires app restart to fully take effect.</value>
   </data>
+  <data name="SearchSolutionText" xml:space="preserve">
+    <value>Search</value>
+  </data>
+  <data name="ShowAllProjectsLabel" xml:space="preserve">
+    <value>Show all projects</value>
+  </data>
 </root>
