@@ -1,10 +1,10 @@
 using Avalonia.Controls;
 
 namespace SharpDockerizer.AvaloniaUI.Views;
-public partial class TopBar : UserControl
-{ 
-    public TopBar()
+public partial class MainApplicationView : UserControl
+{
+    public MainApplicationView()
     {
         InitializeComponent();
-    } 
+    }
 }

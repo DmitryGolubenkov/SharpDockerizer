@@ -1,19 +1,30 @@
 using Avalonia;
-using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using CommunityToolkit.Mvvm.Messaging;
 using SharpDockerizer.AppLayer.Contracts;
 using SharpDockerizer.AppLayer.Generation;
 using SharpDockerizer.AppLayer.Services.Project;
 using SharpDockerizer.AppLayer.Services.Solution;
-using SharpDockerizer.AvaloniaUI.ViewModels;
-using Microsoft.Extensions.DependencyInjection;
 using Serilog;
-using System;
+using Autofac;
+using Avalonia.Controls;
+using Avalonia.Controls.ApplicationLifetimes;
+using SharpDockerizer.AppLayer.Events;
+using SharpDockerizer.AvaloniaUI.Services;
+using SharpDockerizer.AvaloniaUI.Services.Localization;
+
 namespace SharpDockerizer.AvaloniaUI;
+
 public partial class App : Application
 {
-    private IServiceProvider _services;
+    #region Fields
+
+    private IContainer? _serviceContainer;
+    private MainWindow? _mainWindow;
+
+    #endregion
+
+    #region Avalonia Methods
 
     public override void Initialize()
     {
@@ -22,57 +33,94 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        IServiceCollection serviceCollection = new ServiceCollection();
-        ConfigureServices(serviceCollection);
+        // Configure required services
+        var builder = new ContainerBuilder();
+        ConfigureServices(builder);
+        var services = builder.Build();
+        _serviceContainer = services;
 
-        _services = serviceCollection.BuildServiceProvider();
+        // Resolver is used in DI and MVVM to resolve viewmodels for views.
+        DISource.Resolver = services.Resolve;
 
-        // Used in DI and MVVM
-        DISource.Resolver = _services.GetService;
+        // Resolve and show main window
+        var mainWindow = services.Resolve<MainWindow>();
+        _mainWindow = mainWindow;
+        mainWindow.Show();
 
-        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
-        {
-            desktop.MainWindow = new MainWindow();
-        }
+        var desktopLifetime = new ClassicDesktopStyleApplicationLifetime();
+        desktopLifetime.MainWindow = mainWindow;
+        desktopLifetime.ShutdownMode = ShutdownMode.OnLastWindowClose;
+        ApplicationLifetime = desktopLifetime;
+
         Log.Information("Application started");
+
+        var messenger = services.Resolve<IMessenger>();
+        messenger.Register<NeedAppRestartEvent>(this, RestartApp);
 
         base.OnFrameworkInitializationCompleted();
     }
 
-    private void ConfigureServices(IServiceCollection serviceCollection)
+    #endregion
+
+
+    private void ConfigureServices(ContainerBuilder builder)
     {
-        // ViewModels
-        /*foreach (var viewModelType in GetType().Assembly.GetTypes().Where(type => type.Namespace == "SharpDockerizer.AvaloniaUI.ViewModels"))
-        {
-            //serviceCollection.AddTransient<viewModelType>();
-        }*/
-        ConfigureLogging(serviceCollection);
+        // Logging
+        ConfigureLogging(builder);
 
-        serviceCollection.AddTransient<DockerfileGeneratorViewModel>();
-        serviceCollection.AddTransient<MainWindowViewModel>();
-        serviceCollection.AddTransient<SolutionViewerViewModel>();
-        serviceCollection.AddTransient<TopBarViewModel>();
+        //Register all view models
+        builder.RegisterAssemblyTypes(typeof(App).Assembly)
+            .Where(t => t.Name.EndsWith("ViewModel"))
+            .AsSelf()
+            .AsImplementedInterfaces();
 
-        serviceCollection.AddSingleton<IMessenger, StrongReferenceMessenger>();
-        serviceCollection.AddSingleton<ICurrentSolutionInfo, CurrentSolutionInfo>();
-        serviceCollection.AddTransient<ISolutionLoader, SolutionLoader>();
-        serviceCollection.AddTransient<ISolutionUpdater, SolutionLoader>();
-        serviceCollection.AddTransient<IProjectDataExporter, ProjectDataExporter>();
-        serviceCollection.AddTransient<IDockerfileGenerator, DockerfileGenerator>();
-        serviceCollection.AddTransient<IAspNetDockerImageVersionSelector, AspNetDockerImageVersionSelector>();
-        serviceCollection.AddTransient<IDotNetSdkImageVersionSelector, DotNetSdkImageVersionSelector>();
-        serviceCollection.AddTransient<IProjectDependenciesExporter, ProjectDependenciesExporter>();
-        serviceCollection.AddTransient<IRecentlyOpenedSolutionsService, RecentlyOpenedSolutionsService>();
+        // UI Services
+        builder.RegisterType<StrongReferenceMessenger>().As<IMessenger>().SingleInstance();
+        builder.RegisterType<AppNavigator>().AsSelf().SingleInstance();
+        builder.RegisterType<ClipboardService>().As<IClipboardService>();
+
+        builder.RegisterType<OptionsService>().AsSelf().SingleInstance();
+        builder.RegisterType<LocalizationController>().AsSelf().SingleInstance();
+        builder.RegisterType<MainWindow>().AsSelf();
+
+        // Register other services required for application to function
+        builder.RegisterType<CurrentSolutionInfo>().As<ICurrentSolutionInfo>().SingleInstance();
+        builder.RegisterType<SolutionLoader>().AsImplementedInterfaces();
+        builder.RegisterType<ProjectDataExporter>().As<IProjectDataExporter>();
+        builder.RegisterType<StandartDockerfileGenerator>().As<IDockerfileGenerator>();
+        builder.RegisterType<AspNetDockerImageVersionSelector>().As<IAspNetDockerImageVersionSelector>();
+        builder.RegisterType<DotNetSdkImageVersionSelector>().As<IDotNetSdkImageVersionSelector>();
+        builder.RegisterType<ProjectDependenciesExporter>().As<IProjectDependenciesExporter>();
+        builder.RegisterType<RecentlyOpenedSolutionsService>().As<IRecentlyOpenedSolutionsService>();
+        builder.RegisterType<NuGetConfigExtractor>().As<INuGetConfigExtractor>();
     }
 
-    private void ConfigureLogging(IServiceCollection services)
+    private void ConfigureLogging(ContainerBuilder builder)
     {
         var loggerConfiguration = new LoggerConfiguration()
-           .WriteTo.File("logs/app.log", rollingInterval: RollingInterval.Day, fileSizeLimitBytes: 3145728);
+            .WriteTo.File("logs/app.log", rollingInterval: RollingInterval.Day, fileSizeLimitBytes: 3145728);
 
         ILogger log = loggerConfiguration.CreateLogger();
         Log.Logger = log;
-        services.AddSingleton(log);
+        builder.RegisterInstance<ILogger>(log).SingleInstance();
     }
 
+    private async void RestartApp(object recipient, NeedAppRestartEvent message)
+    {
+        var oldMainWindow = _mainWindow;
+
+        // Resolve and show main window
+        Log.Information("Restaring application");
+        var mainWindow = _serviceContainer.Resolve<MainWindow>();
+        _mainWindow = mainWindow;
+        // Because app closes on last window close - we need to show new window earlier than we close old
+        mainWindow.Show();
+        oldMainWindow?.Close();
+
+        if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
+        {
+            desktop.MainWindow = mainWindow;
+        }
+
+    }
 }

@@ -24,8 +24,8 @@ public class ProjectDataExporter : IProjectDataExporter
 
             var projectName = Path.GetFileNameWithoutExtension(path);
 
-            var targetFramework = xml.Root.Descendants().Where(element => element.Name == "TargetFramework" || element.Name == "TargetFrameworks").FirstOrDefault();
 
+            var targetFramework = xml.Root.Descendants().Where(element => element.Name == "TargetFramework" || element.Name == "TargetFrameworks").FirstOrDefault();
             var version = targetFramework is not null ? ParseDotNetVersion(targetFramework.Value) : null;
 
             var projectData = new ProjectData()

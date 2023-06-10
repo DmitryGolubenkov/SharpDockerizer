@@ -15,10 +15,11 @@ using System.IO;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Platform.Storage;
 using SharpDockerizer.AvaloniaUI.Properties;
+using SharpDockerizer.AvaloniaUI.Services;
 
 namespace SharpDockerizer.AvaloniaUI.ViewModels;
-[INotifyPropertyChanged]
-internal partial class DockerfileGeneratorViewModel
+
+internal partial class DockerfileGeneratorViewModel : ObservableObject
 {
     #region Properties
 
@@ -46,6 +47,7 @@ internal partial class DockerfileGeneratorViewModel
     private readonly IMessenger _messenger;
     private readonly ISolutionUpdater _solutionUpdater;
     private readonly ICurrentSolutionInfo _currentSolutionInfo;
+    private readonly IClipboardService _clipboardService;
     private ProjectData? _selectedProjectData;
 
     #endregion
@@ -55,13 +57,14 @@ internal partial class DockerfileGeneratorViewModel
     public DockerfileGeneratorViewModel(IDockerfileGenerator dockerfileGenerator,
         IMessenger messenger,
         ISolutionUpdater solutionUpdater,
-        ICurrentSolutionInfo currentSolutionInfo)
+        ICurrentSolutionInfo currentSolutionInfo,
+        IClipboardService clipboardService)
     {
         _dockerfileGenerator = dockerfileGenerator;
         _messenger = messenger;
         _solutionUpdater = solutionUpdater;
         _currentSolutionInfo = currentSolutionInfo;
-
+        _clipboardService = clipboardService;
         _messenger.Register<ProjectSelectedEvent>(this, OnProjectSelectedHandler);
     }
 
@@ -171,8 +174,7 @@ internal partial class DockerfileGeneratorViewModel
         if (GeneratedDockerfile is null)
             return;
 
-        await Application.Current.Clipboard.SetTextAsync(GeneratedDockerfile);
-
+        await _clipboardService.SetTextAsync(GeneratedDockerfile);
         // TODO: Notification
     }
 
@@ -205,13 +207,17 @@ internal partial class DockerfileGeneratorViewModel
             AllowMultiple = false,
         });
 
-        if (result[0].TryGetUri(out var pathUri))
+
+        // await File.WriteAllTextAsync(
+        // Path.Combine(result[0].Path.AbsolutePath, "Dockerfile"),
+        // GeneratedDockerfile);
+        var pathUri = result[0].Path;
+        if (pathUri is not null)
         {
             await File.WriteAllTextAsync(
             Path.Combine(pathUri.AbsolutePath, "Dockerfile"),
             GeneratedDockerfile);
         }
-
         // TODO: Dialog "Overwrite existing file?"
         // TODO: Notification
     }
