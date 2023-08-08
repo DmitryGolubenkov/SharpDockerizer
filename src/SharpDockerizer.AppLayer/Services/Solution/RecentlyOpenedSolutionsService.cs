@@ -3,11 +3,38 @@ using SharpDockerizer.AppLayer.Models;
 using System.Text;
 
 namespace SharpDockerizer.AppLayer.Services.Solution;
+
+/// <summary>
+/// Controls recently opened solutions.
+/// </summary>
 public class RecentlyOpenedSolutionsService : IRecentlyOpenedSolutionsService
 {
 
+    #region Consts
+    
+    /// <summary>
+    /// Save file name. It is placed in directory where SharpDockerizer is present
+    /// </summary>
     private const string saveFileName = "recentsolutions";
+
+    #endregion
+
+    #region Properties
+
+    /// <summary>
+    /// Returns path to save file
+    /// </summary>
     private string SaveFilePath { get => Path.Combine(AppContext.BaseDirectory, saveFileName); }
+
+    #endregion
+
+    #region Methods
+
+    /// <summary>
+    /// Returns list of recently opened solutions, parsed from local csv, if exists. 
+    /// Returns empty list if file does not exist.
+    /// </summary>
+    /// <returns></returns>
     public List<RecentlyOpenedSolution> GetSolutions()
     {
         List<RecentlyOpenedSolution> result = new List<RecentlyOpenedSolution>();
@@ -26,7 +53,7 @@ public class RecentlyOpenedSolutionsService : IRecentlyOpenedSolutionsService
                 var parts = solution.Split(';');
                 result.Add(new RecentlyOpenedSolution()
                 {
-                    Name = $"{parts[0]} ({parts[1]})",
+                    Name = parts[0],
                     AbsolutePath = parts[1],
                 });
             }
@@ -48,7 +75,9 @@ public class RecentlyOpenedSolutionsService : IRecentlyOpenedSolutionsService
         var recentSolutions = GetSolutions();
 
         // If this solution was already opened - remove it from list
-        var maybeAddedIndex = recentSolutions.FindIndex(x => x.AbsolutePath == solution.AbsolutePath);
+        var maybeAddedIndex = recentSolutions
+            .FindIndex(x => x.AbsolutePath == solution.AbsolutePath);
+
         if (maybeAddedIndex != -1)
             recentSolutions.RemoveAt(maybeAddedIndex);
 
@@ -57,6 +86,9 @@ public class RecentlyOpenedSolutionsService : IRecentlyOpenedSolutionsService
         await Save(recentSolutions);
     }
 
+    /// <summary>
+    /// Removes a solution with concrete absolute path from recent solutions list.
+    /// </summary>
     public async Task RemoveWithPath(string path)
     {
         var recentSolutions = GetSolutions();
@@ -80,4 +112,7 @@ public class RecentlyOpenedSolutionsService : IRecentlyOpenedSolutionsService
 
         await File.WriteAllTextAsync(SaveFilePath, sb.ToString());
     }
+
+    #endregion
+
 }

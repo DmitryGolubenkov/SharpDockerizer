@@ -9,4 +9,9 @@ public class RecentlyOpenedSolution
     /// Path to solution .sln file
     /// </summary>
     public required string AbsolutePath { get; set; }
+
+    /// <summary>
+    /// Name as it should be displayed
+    /// </summary>
+    public string DisplayedName { get => $"{Name} ({AbsolutePath})"; }
 }
