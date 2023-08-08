@@ -9,41 +9,84 @@
              mc:Ignorable="d" d:DesignWidth="300" d:DesignHeight="650"
              x:Class="SharpDockerizer.AvaloniaUI.Views.SolutionViewer"
              xmlns:mati="clr-namespace:Material.Icons.Avalonia;assembly=Material.Icons.Avalonia">
+
+	<UserControl.Styles>
+		<!-- Styles that control toggle button.. style-->
+		<Style Selector="ToggleButton">
+			<Setter Property="Height" Value="35" />
+			<Setter Property="Width" Value="35" />
+			<Setter Property="CornerRadius" Value="35" />
+		</Style>
+
+		<!-- Color when checked-->
+		<Style Selector="ToggleButton:checked">
+			<Setter Property="Background" Value="{DynamicResource MaterialDesignBodyLight }"/>
+		</Style>
+
+		<!-- Visible icon depending on class-->
+		<Style Selector="ToggleButton Panel.show-all-projects-on">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+		<Style Selector="ToggleButton:checked Panel.show-all-projects-on">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+		<Style Selector="ToggleButton Panel.show-all-projects-off">
+			<Setter Property="IsVisible" Value="True"/>
+		</Style>
+		<Style Selector="ToggleButton:checked Panel.show-all-projects-off">
+			<Setter Property="IsVisible" Value="False"/>
+		</Style>
+	</UserControl.Styles>
+
 	<Border BorderThickness="1" BorderBrush="{DynamicResource MaterialDesignCardBackground}">
 		<DockPanel Margin="10" VerticalAlignment="Stretch">
 			<!-- Header -->
-			<DockPanel LastChildFill="False" DockPanel.Dock="Top">
-				<mati:MaterialIcon Kind="FileTree" DockPanel.Dock="Left" />
-				<TextBlock Margin="8"
-						   FontSize="16"
-						   DockPanel.Dock="Left" Text="{x:Static p:Resources.SolutionViewerTitle}" />
-				<Button Command="{Binding RefreshSolution}"
-						DockPanel.Dock="Right"
-						IsVisible="{Binding IsSolutionLoaded}"
-						Classes="Flat Light Topbar"
-						ToolTip.Tip="{x:Static p:Resources.RefreshButton}">
-					<mati:MaterialIcon Kind="Refresh" />
-				</Button>
-			</DockPanel>
+			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}"
+			BorderThickness="0,0,0,1">
+
+				<DockPanel LastChildFill="False" DockPanel.Dock="Top">
+					<mati:MaterialIcon Kind="FileTree" DockPanel.Dock="Left" />
+					<TextBlock Margin="8"
+							   FontSize="16"
+							   DockPanel.Dock="Left" Text="{x:Static p:Resources.SolutionViewerTitle}" />
+					<!-- Show All Projects Checkbox -->
+					
+					<ToggleButton DockPanel.Dock="Left" 
+								  IsChecked="{Binding ShowAllProjects}"
+								  ToolTip.Tip="{x:Static p:Resources.ShowAllProjectsLabel}"
+								  >
+						<Panel>
+							<Panel Classes="show-all-projects-off">
+								<mati:MaterialIcon  Kind="EyeOutline" />
+							</Panel>
+							<Panel Classes="show-all-projects-on">
+								<mati:MaterialIcon  Kind="Eye" />
+							</Panel>
+						</Panel>
+					</ToggleButton>
+
+					<!-- Refresh solution button -->
+					<Button Command="{Binding RefreshSolution}"
+							DockPanel.Dock="Right"
+							IsVisible="{Binding IsSolutionLoaded}"
+							Classes="Flat Light Topbar"
+							ToolTip.Tip="{x:Static p:Resources.RefreshButton}">
+						<mati:MaterialIcon Kind="Refresh" />
+					</Button>
+				</DockPanel>
+			</Border>
 
 			<!-- Search -->
-			<Border DockPanel.Dock="Top" BorderBrush="{DynamicResource MaterialDesignCardBackground}"
-		BorderThickness="0,0,0,1">
-				<StackPanel Orientation="Horizontal" Margin="0,5">
-					<TextBlock VerticalAlignment="Center" Text="{x:Static p:Resources.SearchSolutionText}" />
-					<TextBox 	Background="{DynamicResource MaterialDesignTextFieldBoxBackground}"
-								BorderBrush="{DynamicResource MaterialDesignCardBackground}"
-								VerticalAlignment="Center"
-								Text="{Binding SearchString}"
-								Width="235" Height="25" Margin="8,0" />
-				</StackPanel>
-			</Border>
-			<!-- Show All Projects Checkbox -->
-			<StackPanel DockPanel.Dock="Top" Orientation="Horizontal" Margin="0,5">
-				<CheckBox IsChecked="{Binding ShowAllProjects}" />
-				<TextBlock VerticalAlignment="Center" Text="{x:Static p:Resources.ShowAllProjectsLabel}" />
+			<StackPanel Orientation="Horizontal" Margin="0,5" DockPanel.Dock="Top">
+				<mati:MaterialIcon Kind="Search" />
+				<TextBox
+							BorderBrush="{DynamicResource MaterialDesignCardBackground}"
+							VerticalAlignment="Center"
+							Watermark="{x:Static p:Resources.SearchSolutionText}"
+							Text="{Binding SearchString}"
+							Width="235" Height="25" Margin="8,0" />
 			</StackPanel>
-			
+
 			<!-- Internal part -->
 			<!-- If no solution loaded -->
 			<TextBlock DockPanel.Dock="Top"
