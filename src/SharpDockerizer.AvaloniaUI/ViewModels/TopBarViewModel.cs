@@ -86,7 +86,6 @@ internal partial class TopBarViewModel : ObservableObject
             {
                 var uri = result[0].Path;
                 await _solutionLoader.LoadSolution(uri.AbsolutePath);
-                //await _solutionLoader.LoadSolution(result[0].Path.AbsolutePath);
                 await _recentlyOpenedSolutionsService.Add(new RecentlyOpenedSolution()
                 {
                     Name =_currentSolutionInfo.CurrentSolution.Name,

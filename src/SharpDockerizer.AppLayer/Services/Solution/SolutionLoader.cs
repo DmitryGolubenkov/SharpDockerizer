@@ -2,6 +2,7 @@
 using SharpDockerizer.Core.Models;
 using SharpDockerizer.AppLayer.Contracts;
 using Serilog;
+using System.Net;
 
 namespace SharpDockerizer.AppLayer.Services.Solution;
 public class SolutionLoader : ISolutionLoader, ISolutionUpdater
@@ -22,6 +23,8 @@ public class SolutionLoader : ISolutionLoader, ISolutionUpdater
     public async Task LoadSolution(string solutionFilePath)
     {
         var tempFile = Path.GetTempFileName();
+
+        solutionFilePath = WebUtility.UrlDecode(solutionFilePath);
 
         try
         {
