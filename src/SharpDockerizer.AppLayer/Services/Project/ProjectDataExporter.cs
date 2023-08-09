@@ -40,8 +40,8 @@ public class ProjectDataExporter : IProjectDataExporter
             {
                 ProjectName = projectName,
                 DotNetVersion = version,
-                AbsolutePathToProjFile = path,
-                RelativePathToProjFile = relativePath,
+                AbsolutePathToProjFile = path.Replace('\\', '/'),
+                RelativePathToProjFile = relativePath.Replace('\\', '/'),
                 IsAspNetProject = isAspNetProject,
                 HasTemplate = dockerfileTemplateService.CheckIfPathContainsTemplate(Path.GetDirectoryName(path))
             };
