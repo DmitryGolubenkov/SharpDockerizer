@@ -12,6 +12,7 @@ using Avalonia.Controls.ApplicationLifetimes;
 using SharpDockerizer.AppLayer.Events;
 using SharpDockerizer.AvaloniaUI.Services;
 using SharpDockerizer.AvaloniaUI.Services.Localization;
+using SharpDockerizer.AppLayer.Services.Templates;
 
 namespace SharpDockerizer.AvaloniaUI;
 
@@ -87,12 +88,13 @@ public partial class App : Application
         builder.RegisterType<CurrentSolutionInfo>().As<ICurrentSolutionInfo>().SingleInstance();
         builder.RegisterType<SolutionLoader>().AsImplementedInterfaces();
         builder.RegisterType<ProjectDataExporter>().As<IProjectDataExporter>();
-        builder.RegisterType<StandartDockerfileGenerator>().As<IDockerfileGenerator>();
+        builder.RegisterType<DockerfileGenerator>().As<IDockerfileGenerator>();
         builder.RegisterType<AspNetDockerImageVersionSelector>().As<IAspNetDockerImageVersionSelector>();
         builder.RegisterType<DotNetSdkImageVersionSelector>().As<IDotNetSdkImageVersionSelector>();
         builder.RegisterType<ProjectDependenciesExporter>().As<IProjectDependenciesExporter>();
         builder.RegisterType<RecentlyOpenedSolutionsService>().As<IRecentlyOpenedSolutionsService>();
         builder.RegisterType<NuGetConfigExtractor>().As<INuGetConfigExtractor>();
+        builder.RegisterType<DockerfileTemplateService>();
     }
 
     private void ConfigureLogging(ContainerBuilder builder)

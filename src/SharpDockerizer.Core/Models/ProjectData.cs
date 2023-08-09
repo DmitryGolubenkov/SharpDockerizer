@@ -17,12 +17,18 @@ public class ProjectData
     /// <summary>
     /// Relative path from solution folder to project folder (including project file)
     /// </summary>
-    public required string RelativePath { get; set; }
+    public required string RelativePathToProjFile { get; set; }
 
     /// <summary>
     /// If ASP.NET SDK usage is detected in project - this property will be <see langword="true"/>;
     /// </summary>
     public required bool IsAspNetProject { get; set; }
+
+    /// <summary>
+    /// If project contains Dockerfile template data
+    /// </summary>
+    public bool HasTemplate { get; set; }
+
 
     /// <summary>
     /// Checks if all properties of ProjectData are equal.
@@ -34,7 +40,7 @@ public class ProjectData
             return ProjectName == projectData.ProjectName
                 && AbsolutePathToProjFile == projectData.AbsolutePathToProjFile
                 && DotNetVersion == projectData.DotNetVersion
-                && RelativePath == projectData.RelativePath
+                && RelativePathToProjFile == projectData.RelativePathToProjFile
                 && IsAspNetProject == projectData.IsAspNetProject;
         }
 
@@ -49,7 +55,7 @@ public class ProjectData
     {
         ProjectName = projectData.ProjectName;
         AbsolutePathToProjFile = projectData.AbsolutePathToProjFile;
-        RelativePath = projectData.RelativePath;
+        RelativePathToProjFile = projectData.RelativePathToProjFile;
         DotNetVersion = projectData.DotNetVersion;
         IsAspNetProject = projectData.IsAspNetProject;
     }

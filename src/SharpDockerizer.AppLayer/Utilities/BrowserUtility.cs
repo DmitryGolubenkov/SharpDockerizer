@@ -3,8 +3,16 @@ using System.Diagnostics;
 using System.Runtime.InteropServices;
 
 namespace SharpDockerizer.AppLayer.Utilities;
+
+/// <summary>
+/// Platform independent helper that helps with web browser actions.
+/// </summary>
 public static class BrowserUtility
 {
+
+    /// <summary>
+    /// Opens a URL using default platform browser.
+    /// </summary>
     public static void OpenBrowser(string url)
     {
         if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows))

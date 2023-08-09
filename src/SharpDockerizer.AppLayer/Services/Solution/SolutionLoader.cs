@@ -3,17 +3,22 @@ using SharpDockerizer.Core.Models;
 using SharpDockerizer.AppLayer.Contracts;
 using Serilog;
 using System.Net;
+using SharpDockerizer.AppLayer.Services.Templates;
 
 namespace SharpDockerizer.AppLayer.Services.Solution;
 public class SolutionLoader : ISolutionLoader, ISolutionUpdater
 {
     private readonly ICurrentSolutionInfo _currentSolutionInfo;
     private readonly IProjectDataExporter _projectDataExporter;
+    private readonly DockerfileTemplateService _dockerfileTemplateService;
 
-    public SolutionLoader(ICurrentSolutionInfo currentSolutionInfo, IProjectDataExporter projectDataExporter)
+    public SolutionLoader(ICurrentSolutionInfo currentSolutionInfo,
+        IProjectDataExporter projectDataExporter,
+        DockerfileTemplateService dockerfileTemplateService)
     {
         _currentSolutionInfo = currentSolutionInfo;
         _projectDataExporter = projectDataExporter;
+        _dockerfileTemplateService = dockerfileTemplateService;
     }
 
     /// <summary>
@@ -42,6 +47,7 @@ public class SolutionLoader : ISolutionLoader, ISolutionUpdater
                 Name = Path.GetFileNameWithoutExtension(solutionFilePath),
                 SolutionRootDirectoryPath = Path.GetDirectoryName(solutionFilePath),
                 SolutionFilePath = solutionFilePath,
+                HasTemplate = _dockerfileTemplateService.CheckIfPathContainsTemplate(Path.GetDirectoryName(solutionFilePath))
             };
 
             // Read projects
@@ -69,11 +75,15 @@ public class SolutionLoader : ISolutionLoader, ISolutionUpdater
             File.Copy(_currentSolutionInfo.CurrentSolution.SolutionFilePath, tempFile, true);
             var solution = DotNetSolution.Load(tempFile);
 
+            // Update template status
+            _currentSolutionInfo.CurrentSolution.HasTemplate =
+                _dockerfileTemplateService.CheckIfPathContainsTemplate(_currentSolutionInfo.CurrentSolution.SolutionRootDirectoryPath);
+
             // Read projects
             var newProjects = await LoadProjects(solution);
+
             // Then check if any changes were introduced (like new projects added, other removed etc).
             // Also we don't care about their order but SequenceEqual cares, so we need to sort them before comparing.
-
 
             if (!newProjects.OrderBy(x => x.ProjectName)
                 .SequenceEqual(_currentSolutionInfo.Projects.OrderBy(x => x.ProjectName)))

@@ -2,17 +2,25 @@
 using SharpDockerizer.AppLayer.Contracts;
 using System.Xml.Linq;
 using Serilog;
+using SharpDockerizer.AppLayer.Services.Templates;
 
 namespace SharpDockerizer.AppLayer.Services.Project;
 public class ProjectDataExporter : IProjectDataExporter
 {
     private readonly ICurrentSolutionInfo _currentSolutionInfo;
+    private readonly DockerfileTemplateService dockerfileTemplateService;
 
-    public ProjectDataExporter(ICurrentSolutionInfo currentSolutionInfo)
+    public ProjectDataExporter(ICurrentSolutionInfo currentSolutionInfo,
+        DockerfileTemplateService dockerfileTemplateService)
     {
         _currentSolutionInfo = currentSolutionInfo;
+        this.dockerfileTemplateService = dockerfileTemplateService;
     }
 
+    /// <summary>
+    /// Extracts data from proj file and returns ProjectData object.
+    /// </summary>
+    /// <param name="path">Full path to proj file. </param>
     public async Task<ProjectData> GetProjectData(string path)
     {
         Log.Information($"Extracting data from project at path {path}");
@@ -33,11 +41,12 @@ public class ProjectDataExporter : IProjectDataExporter
                 ProjectName = projectName,
                 DotNetVersion = version,
                 AbsolutePathToProjFile = path,
-                RelativePath = relativePath,
-                IsAspNetProject = isAspNetProject
+                RelativePathToProjFile = relativePath,
+                IsAspNetProject = isAspNetProject,
+                HasTemplate = dockerfileTemplateService.CheckIfPathContainsTemplate(Path.GetDirectoryName(path))
             };
 
-            Log.Information($"Project data: {projectData}");
+            Log.Information($"Project data extracted for project: {projectData.ProjectName}");
 
             return projectData;
         }
@@ -45,7 +54,7 @@ public class ProjectDataExporter : IProjectDataExporter
     }
 
     /// <summary>
-    /// Parses string that contains dotnet versions and returns one of them, or null, if passes data is null.
+    /// Parses string that contains dotnet versions and returns one of them, or null, if passed data is null.
     /// </summary>
     private string? ParseDotNetVersion(string value)
     {

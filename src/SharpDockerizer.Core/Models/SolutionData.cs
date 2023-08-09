@@ -14,4 +14,9 @@ public class SolutionData
     /// </summary>
     public required string SolutionFilePath { get; set; }
 
+    /// <summary>
+    /// If solution contains Dockerfile template data
+    /// </summary>
+    public bool HasTemplate { get; set; }
+
 }
