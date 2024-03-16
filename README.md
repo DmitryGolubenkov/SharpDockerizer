@@ -35,8 +35,8 @@ You can download SharpDockerizer from GitHub: [Releases](https://github.com/Dmit
 
 1. Clone the repository.
 2. Open terminal in `src/SharpDockerizer.AvaloniaUI`.
-3. Use `dotnet publish --configuration Release` to build the application. Built application will be avaliable in `src/SharpDockerizer.AvaloniaUI/bin/Release/net8.0/publish` folder, executable is named `SharpDockerizer.exe`.
-4. Launch application. 
+3. Use `dotnet publish --configuration Release` to build the application. Built application will be avaliable in `src/SharpDockerizer.AvaloniaUI/bin/Release/net8.0/publish` folder, executable is named `SharpDockerizer.exe` for Windows and just `SharpDockerizer` for other systems.
+4. Launch application.
 
 From here you can rename `publish` folder and copy it to preferred location.
 
