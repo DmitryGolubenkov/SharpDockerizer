@@ -16,12 +16,12 @@ internal class Program
     {
         try
         {
-            BuildAvaloniaApp()
-            .Start(AppMain, args);
+            var builder = BuildAvaloniaApp()
+                .StartWithClassicDesktopLifetime(args, ShutdownMode.OnLastWindowClose);
         }
         catch (Exception ex)
         {
-            Log.Fatal(ex, "Unhandled exception occured!");
+            Log.Fatal(ex, "Unhandled exception occurred!");
             Log.CloseAndFlush();
             throw;
         }
@@ -32,14 +32,5 @@ internal class Program
         => AppBuilder.Configure<App>()
             .UsePlatformDetect()
             .LogToTrace();
-    
-    // Application entry point. Avalonia is completely initialized.
-    static void AppMain(Application app, string[] args)
-    {
-        var cts = new CancellationTokenSource();
-
-
-        app.Run(cts.Token);
-    }
 }
-        
+

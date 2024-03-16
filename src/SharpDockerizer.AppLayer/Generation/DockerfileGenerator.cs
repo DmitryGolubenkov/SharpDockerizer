@@ -106,7 +106,8 @@ public class DockerfileGenerator : IDockerfileGenerator
         var sdDotNetSdkImageVersion = _dotNetSdkImageVersionSelector.GetLinkToImageForVersion(model.SelectedProjectData.DotNetVersion);
         var sdAspNetDockerImageVersion = _aspNetDockerImageVersionSelector.GetLinkToImageForVersion(model.SelectedProjectData.DotNetVersion);
         var sdProjectFileName = Path.GetFileName(model.SelectedProjectData.AbsolutePathToProjFile); // Ex: Project.File.Name.csproj
-        var sdProjectFolderRelativePath = Path.GetDirectoryName(model.SelectedProjectData.RelativePathToProjFile); // Ex: /src/Project.API/
+        var sdProjectFolderRelativePath = Path.GetDirectoryName(model.SelectedProjectData.RelativePathToProjFile)
+            .Replace('\\', '/'); // Ex: /src/Project.API/
         var sdProjectName = model.SelectedProjectData.ProjectName;
         var sdExposedPorts = DockerfileUtilities.GetExposedPorts(model.ExposedPorts);
         var sdSelectedProjFileRelativePath = model.SelectedProjectData.RelativePathToProjFile;
@@ -146,10 +147,10 @@ public class DockerfileGenerator : IDockerfileGenerator
             .Replace("sdCopyEverythingInstructions", sdCopyEverythingInstructions); // All COPY instructions for all files of projects that would be built.
 
 
-        Log.Information("Successfuly generated dockerfile for project:", model.SelectedProjectData.ProjectName);
+        Log.Information("Successfully generated dockerfile for project:", model.SelectedProjectData.ProjectName);
+
 
         return generatedDockerFile;
-
     }
 
     #endregion

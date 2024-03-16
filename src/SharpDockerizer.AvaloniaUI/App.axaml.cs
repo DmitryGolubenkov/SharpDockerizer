@@ -46,12 +46,14 @@ public partial class App : Application
         // Resolve and show main window
         var mainWindow = services.Resolve<MainWindow>();
         _mainWindow = mainWindow;
+
         mainWindow.Show();
 
-        var desktopLifetime = new ClassicDesktopStyleApplicationLifetime();
-        desktopLifetime.MainWindow = mainWindow;
-        desktopLifetime.ShutdownMode = ShutdownMode.OnLastWindowClose;
-        ApplicationLifetime = desktopLifetime;
+        var lifetime = (ApplicationLifetime as ClassicDesktopStyleApplicationLifetime);
+
+        if (lifetime is not null)
+            lifetime.MainWindow = mainWindow;
+
 
         Log.Information("Application started");
 

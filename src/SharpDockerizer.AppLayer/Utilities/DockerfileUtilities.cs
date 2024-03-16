@@ -71,9 +71,10 @@ internal static class DockerfileUtilities
 
         foreach (ProjectData projectData in projectDependencies)
         {
-            var projectFolderRelativePath = Path.GetDirectoryName(projectData.RelativePathToProjFile);
+            var projectFolderRelativePath = Path.GetDirectoryName(projectData.RelativePathToProjFile).Replace('\\', '/');
             sb.AppendLine($@"COPY [""{projectData.RelativePathToProjFile}"", ""{projectFolderRelativePath}/""]");
         }
+
 
         return sb.ToString();
     }
@@ -84,7 +85,7 @@ internal static class DockerfileUtilities
 
         foreach (ProjectData projectData in projectDependencies)
         {
-            var projectFolderRelativePath = Path.GetDirectoryName(projectData.RelativePathToProjFile);
+            var projectFolderRelativePath = Path.GetDirectoryName(projectData.RelativePathToProjFile).Replace('\\', '/');
             sb.AppendLine($@"COPY [""{projectFolderRelativePath}/"", ""{projectFolderRelativePath}/""]");
         }
 

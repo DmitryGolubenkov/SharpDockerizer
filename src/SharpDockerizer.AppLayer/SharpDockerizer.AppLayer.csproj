@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
@@ -11,8 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="ByteDev.DotNet" Version="7.2.0" />
-    <PackageReference Include="Serilog" Version="2.12.1-dev-01635" />
+    <PackageReference Include="ByteDev.DotNet" Version="7.2.1" />
+    <PackageReference Include="Serilog" Version="3.1.1" />
   </ItemGroup>
 
 </Project>

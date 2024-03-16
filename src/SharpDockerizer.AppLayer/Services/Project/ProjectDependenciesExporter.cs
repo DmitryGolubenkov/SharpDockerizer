@@ -28,7 +28,8 @@ public class ProjectDependenciesExporter : IProjectDependenciesExporter
     }
 
     /// <summary>
-    /// Recursively searches through project dependencies and finds all projects that are needed to build. Uses path to Project file as a parameter.
+    /// Recursively searches through project dependencies and finds all projects that are needed to build. 
+    /// Uses path to Project file as a parameter.
     /// </summary>
     /// <param name="pathToProj">Path to project file.</param>
     /// <returns>Projects that the <paramref name="pathToProj"/> depends on.</returns>

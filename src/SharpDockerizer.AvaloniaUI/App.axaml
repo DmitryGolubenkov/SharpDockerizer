@@ -7,7 +7,7 @@
 	<Application.Styles>
 		<materialIcons:MaterialIconStyles />
 		<themes:MaterialTheme BaseTheme="Dark" PrimaryColor="Purple" SecondaryColor="Lime" />
-		<StyleInclude Source="avares://Material.DataGrid/DataGrid.xaml" />
+		<!--<StyleInclude Source="avares://Material.DataGrid/DataGrid.xaml" />-->
 
 
 		<Style Selector="Button.Topbar">
